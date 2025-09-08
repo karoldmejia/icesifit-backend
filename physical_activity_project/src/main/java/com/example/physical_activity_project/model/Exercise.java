@@ -1,6 +1,5 @@
 package com.example.physical_activity_project.model;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -19,29 +18,24 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Event {
+public class Exercise {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "name", nullable = false)
     private String name;
-    @Column(name = "type", nullable = true)
+    @Column(name = "type", nullable = false)
     private String type;
-    @Column(name = "strat_date", nullable = false)
-    private Timestamp startDate;
-    @Column(name = "end_date", nullable = false)
-    private Timestamp endDate;
-    @Column(name = "capacity", nullable = false)
-    private Integer capacity;
-    @Column(name = "location", nullable = true)
-    private String location;
-    @Column(name = "description", nullable = true)
+    @Column(name = "description", nullable = false)
     private String description;
-    @OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<EventSchedule> eventSchedules;
-    @OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<UserEvent> UserEvents;
+    @Column(name = "duration", nullable = true)
+    private Double duration;
+    @Column(name = "difficulty", nullable = false)
+    private String difficulty;
+    @Column(name = "video_url", nullable = false)
+    private String videoUrl;
 
-    
+    @OneToMany(mappedBy = "exercise", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<RoutineExercise> routineExercises;
 }

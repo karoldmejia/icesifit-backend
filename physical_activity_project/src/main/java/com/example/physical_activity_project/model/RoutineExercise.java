@@ -1,7 +1,5 @@
 package com.example.physical_activity_project.model;
 
-import java.sql.Timestamp;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,16 +15,24 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class UserEvent {
+public class RoutineExercise {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "registration_date", nullable = false)
-    private Timestamp registrationDate;
-    @Column(name = "attended", nullable = false)
-    private Boolean attended;
+    @Column(name = "sets", nullable = false)
+    private Integer sets;
+    @Column(name = "reps", nullable = true)
+    private Integer reps;
+    @Column(name = "time", nullable = true)
+    private Integer time;
 
     @ManyToOne
-    @JoinColumn(name = "event", nullable = false)
-    private Event event;
+    @JoinColumn(name = "exercise", nullable = false)
+    private Exercise exercise;
+
+    @ManyToOne
+    @JoinColumn(name = "routine", nullable = false)
+    private Routine routine;
+
 }

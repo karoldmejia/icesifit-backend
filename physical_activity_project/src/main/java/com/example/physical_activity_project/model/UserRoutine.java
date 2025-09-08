@@ -17,16 +17,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class UserEvent {
+public class UserRoutine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "registration_date", nullable = false)
-    private Timestamp registrationDate;
-    @Column(name = "attended", nullable = false)
-    private Boolean attended;
+    @Column(name ="assignment_date" , nullable = false)
+    private Timestamp assignmentDate;
+    @Column(name ="status" , nullable = false)
+    private Boolean status;
 
     @ManyToOne
-    @JoinColumn(name = "event", nullable = false)
-    private Event event;
+    @JoinColumn(name="routine", nullable = false)
+    private Routine routine;
 }

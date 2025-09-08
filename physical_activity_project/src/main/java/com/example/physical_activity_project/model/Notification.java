@@ -7,8 +7,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,16 +15,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class UserEvent {
+public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "registration_date", nullable = false)
-    private Timestamp registrationDate;
-    @Column(name = "attended", nullable = false)
-    private Boolean attended;
-
-    @ManyToOne
-    @JoinColumn(name = "event", nullable = false)
-    private Event event;
+    @Column(name = "origin_type", nullable = true)
+    private String originType;
+    //id -> origin id
+    @Column(name = "text", nullable = false)
+    private String text;
+    @Column(name = "sent_date", nullable = false)
+    private Timestamp sentDate;
+    @Column(name = "read_flag", nullable = false)
+    private Boolean readFlag;
 }
