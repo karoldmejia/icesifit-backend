@@ -23,10 +23,10 @@ public class UserTrainerAssignment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
+    @Column(name = "assignment_date",nullable = false)
     // Cambiar en el MR a Timestamp
-    private Timestamp assignment_date;
-    @Column(nullable = false, length = 20)
+    private Timestamp assignmentDate;
+    @Column(name = "status",nullable = false, length = 20)
     private String status;
 
     @ManyToOne

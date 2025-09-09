@@ -21,7 +21,7 @@ public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "origin_type", nullable = true)
+    @Column(name = "origin_type", nullable = true, length = 100)
     private String originType;
     @Column(name = "origin_id", nullable = true)
     private Integer originId;

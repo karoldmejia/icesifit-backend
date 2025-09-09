@@ -23,7 +23,7 @@ public class UserRoutine {
     private Long id;
     @Column(name ="assignment_date" , nullable = false)
     private Timestamp assignmentDate;
-    @Column(name ="status" , nullable = false)
+    @Column(name ="status" , nullable = false, length = 20)
     private Boolean status;
 
     @ManyToOne

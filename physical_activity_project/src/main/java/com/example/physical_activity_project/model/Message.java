@@ -14,10 +14,10 @@ public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
+    @Column(name = "content", nullable = false)
     private String content;
-    @Column(nullable = false)
-    private Timestamp send_date;
+    @Column(name = "send_date",nullable = false)
+    private Timestamp sendDate;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

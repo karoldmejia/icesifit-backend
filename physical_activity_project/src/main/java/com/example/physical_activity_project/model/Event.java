@@ -24,9 +24,9 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, length = 100)
     private String name;
-    @Column(name = "type", nullable = true)
+    @Column(name = "type", nullable = true, length = 100)
     private String type;
     @Column(name = "start_date", nullable = false)
     private Timestamp startDate;
@@ -38,6 +38,8 @@ public class Event {
     private String location;
     @Column(name = "description", nullable = true)
     private String description;
+
+
     @OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<EventSchedule> eventSchedules;
     @OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

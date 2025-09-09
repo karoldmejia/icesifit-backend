@@ -26,13 +26,16 @@ public class ExerciseProgress {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
-    private Timestamp progress_date;
-    @Column(nullable = false)
-    private Integer sets_completed;
-    private Integer reps_completed;
-    private Integer time_completed;
-    private Integer effort_level;
+    @Column(name = "progress_date", nullable = false)
+    private Timestamp progressDate;
+    @Column(name = "sets_completed", nullable = false)
+    private Integer setsCompleted;
+    @Column(name = "reps_completed")
+    private Integer repsCompleted;
+    @Column(name = "time_completed")
+    private Integer timeCompleted;
+    @Column(name = "effort_level")
+    private Integer effortLevel;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

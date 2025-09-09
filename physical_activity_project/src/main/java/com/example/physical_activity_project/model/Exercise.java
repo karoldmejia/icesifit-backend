@@ -23,15 +23,15 @@ public class Exercise {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, length = 100)
     private String name;
-    @Column(name = "type", nullable = false)
+    @Column(name = "type", nullable = false, length = 100)
     private String type;
     @Column(name = "description", nullable = false)
     private String description;
     @Column(name = "duration", nullable = true)
     private Double duration;
-    @Column(name = "difficulty", nullable = false)
+    @Column(name = "difficulty", nullable = false, length = 50)
     private String difficulty;
     @Column(name = "video_url", nullable = false)
     private String videoUrl;

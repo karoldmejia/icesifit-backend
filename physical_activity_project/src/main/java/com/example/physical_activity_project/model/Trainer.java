@@ -9,10 +9,13 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 public class Trainer extends User {
-    // REVISAR EL ID
-    @Column(nullable = false)
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(name = "certification", nullable = false)
     private String certification;
-    @Column(nullable = false)
+    @Column(name = "specialty", nullable = false)
     private String specialty;
 
     @OneToMany(mappedBy = "trainer", fetch = jakarta.persistence.FetchType.LAZY, cascade = CascadeType.ALL)

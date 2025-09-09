@@ -16,13 +16,13 @@ public class User {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false, length = 100)
+    @Column(name = "name", nullable = false, length = 100)
     private String name;
-    @Column(nullable = false)
-    private String institutional_email;
-    @Column(nullable = false)
+    @Column(name = "institutional_email", nullable = false)
+    private String institutionalEmail;
+    @Column(name = "password", nullable = false)
     private String password;
-    @Column(nullable = false, length = 50)
+    @Column(name = "role", nullable = false, length = 50)
     private String role;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

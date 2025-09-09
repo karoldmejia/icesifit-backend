@@ -27,7 +27,7 @@ public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "day_of_week", nullable = true)
+    @Column(name = "day_of_week", nullable = true , length = 20)
     private String dayOfWeek;
     @Column(name = "start_time", nullable = false)
     private Timestamp startTime;
