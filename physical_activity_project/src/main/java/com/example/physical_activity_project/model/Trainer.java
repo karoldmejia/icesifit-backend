@@ -1,14 +1,15 @@
 package com.example.physical_activity_project.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
-
-public class Trainer {
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+public class Trainer extends User {
     // REVISAR EL ID
-    @Id
-    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
-    private Long id;
     @Column(nullable = false)
     private String certification;
     @Column(nullable = false)
@@ -19,4 +20,7 @@ public class Trainer {
 
     @OneToMany(mappedBy = "trainer", fetch = jakarta.persistence.FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Recommendation> recommendations;
+
+    @OneToMany(mappedBy = "trainer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<UserTrainerAssignment> userTrainerAssignments;
 }

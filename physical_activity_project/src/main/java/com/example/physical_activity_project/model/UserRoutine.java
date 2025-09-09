@@ -27,6 +27,10 @@ public class UserRoutine {
     private Boolean status;
 
     @ManyToOne
-    @JoinColumn(name="routine", nullable = false)
+    @JoinColumn(name="routine_id", nullable = false)
     private Routine routine;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 }

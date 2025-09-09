@@ -1,9 +1,16 @@
 package com.example.physical_activity_project.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
 public class Recommendation {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)

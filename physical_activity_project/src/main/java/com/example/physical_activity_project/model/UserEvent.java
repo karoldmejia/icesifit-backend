@@ -27,6 +27,10 @@ public class UserEvent {
     private Boolean attended;
 
     @ManyToOne
-    @JoinColumn(name = "event", nullable = false)
+    @JoinColumn(name = "event_id", nullable = false)
     private Event event;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 }

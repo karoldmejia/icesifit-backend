@@ -28,7 +28,7 @@ public class Event {
     private String name;
     @Column(name = "type", nullable = true)
     private String type;
-    @Column(name = "strat_date", nullable = false)
+    @Column(name = "start_date", nullable = false)
     private Timestamp startDate;
     @Column(name = "end_date", nullable = false)
     private Timestamp endDate;
