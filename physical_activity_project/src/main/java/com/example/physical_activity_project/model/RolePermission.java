@@ -11,25 +11,22 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "event_schedule")
-public class EventSchedule {
+@Table(name="role_permission")
+public class RolePermission {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @ManyToOne
-    @JoinColumn(name = "schedule_id", nullable = false)
-    private Schedule schedule;
 
     @ManyToOne
-    @JoinColumn(name = "event_id", nullable = false)
-    private Event event;
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
 
-
-
+    @ManyToOne
+    @JoinColumn(name = "permission_id", nullable = false)
+    private Permission permission;
 }
