@@ -137,6 +137,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <mainClass>com.example.physical_activity_project.PhysicalActivityProjectApplication</mainClass>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>
@@ -145,6 +146,7 @@
                     </excludes>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 </project>

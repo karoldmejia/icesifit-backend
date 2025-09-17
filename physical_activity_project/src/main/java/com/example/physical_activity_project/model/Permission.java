@@ -13,17 +13,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "PERMISO")
 public class Permission {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     @Column(name = "name", nullable = false, length = 100)
     private String name;
     @Column(name = "description", nullable = false, length = 200)
     private String description;
-
-    @OneToMany(mappedBy = "permission", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<RolePermission> rolePermissions;
 }
