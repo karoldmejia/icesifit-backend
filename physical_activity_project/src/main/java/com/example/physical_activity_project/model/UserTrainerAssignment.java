@@ -33,7 +33,7 @@ public class UserTrainerAssignment {
 
     @ManyToOne
     @JoinColumn(name = "trainer_id", nullable = false)
-    private Trainer trainer;
+    private User trainer;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

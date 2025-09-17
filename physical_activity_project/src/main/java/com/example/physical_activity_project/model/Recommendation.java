@@ -28,5 +28,5 @@ public class Recommendation {
 
     @ManyToOne
     @JoinColumn(name = "trainer_id", nullable = false)
-    private Trainer trainer;
+    private User trainer;
 }
