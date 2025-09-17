@@ -1,4 +1,16 @@
 package com.example.physical_activity_project.services;
 
+import java.util.List;
+import java.util.Optional;
+
+import com.example.physical_activity_project.model.User;
+import com.example.physical_activity_project.model.Role;
+
 public interface IUserService {
+    public Optional<User> findByEmail(String email);
+    public User save(User user);
+    public List<User> getAllUsers();
+    public Optional<User> getUserById(Long id);
+    public void initializedUsers();
+    public User changeUserRole(Long userId, Role newRole);
 }
