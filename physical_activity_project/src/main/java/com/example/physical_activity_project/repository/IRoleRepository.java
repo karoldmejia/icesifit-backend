@@ -16,4 +16,5 @@ public interface IRoleRepository extends JpaRepository<Role, Long> {
     // Obtener todos los permisos de un rol
     @Query("SELECT rp.permission FROM RolePermission rp WHERE rp.role.id = :roleId")
     List<Permission> findPermissionsByRoleId(@Param("roleId") Long roleId);
+
 }

@@ -7,12 +7,13 @@ import com.example.physical_activity_project.model.Role;
 import com.example.physical_activity_project.services.impl.PermissionServiceImpl;
 import com.example.physical_activity_project.services.impl.RoleServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
-@RestController
+@Controller
 @RequestMapping("/roles")
 @RequiredArgsConstructor
 public class RoleController {
@@ -51,6 +52,7 @@ public class RoleController {
         return roleService.save(role, permisos);
     }
 
+
     @PutMapping("/{id}")
     public Role update(@PathVariable Long id, @RequestBody RoleDTO roleDTO) {
         Role role = new Role();
@@ -63,7 +65,6 @@ public class RoleController {
                 .toList();
 
         List<Permission> permisos = permissionService.getPermissionsByIds(permisoIds);
-
         return roleService.save(role, permisos);
     }
 

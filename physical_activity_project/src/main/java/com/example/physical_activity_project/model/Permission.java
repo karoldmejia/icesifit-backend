@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "PERMISO")
+@Table(name = "permission")
 public class Permission {
     
     @Id

@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name="recommendation")
 public class Recommendation {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)

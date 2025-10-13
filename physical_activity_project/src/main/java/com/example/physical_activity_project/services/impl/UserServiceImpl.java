@@ -57,6 +57,12 @@ public class UserServiceImpl implements IUserService{
     }
 
     @Override
+    public Optional<User> findByInstitutionalEmail(String institutionalEmail) {
+        return userRepository.findByInstitutionalEmail(institutionalEmail);
+    }
+
+
+    @Override
     public void initializedUsers() {
         List<User> users = userRepository.findAll();
         for (User user : users) {
@@ -78,10 +84,6 @@ public class UserServiceImpl implements IUserService{
         return userRepository.save(user);
     }
 
-    @Override
-    public Optional<User> findByInstitutionalEmail(String institutionalEmail) {
-        return userRepository.findByInstitutionalEmail(institutionalEmail);
-    }
 
 }
 

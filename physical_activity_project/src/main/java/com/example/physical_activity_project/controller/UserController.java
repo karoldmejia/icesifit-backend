@@ -4,12 +4,13 @@ package com.example.physical_activity_project.controller;
 import com.example.physical_activity_project.model.User;
 import com.example.physical_activity_project.services.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
-@RestController
+@Controller
 @RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {

@@ -8,12 +8,11 @@ import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 
-@Entity
-@Table(name = "USUARIO")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Entity
+@Table(name="users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,8 +25,10 @@ public class User {
 
     private String password;
 
+
     // Importante colocarlo en el MER
     private Timestamp createdAt;
+
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;

@@ -8,4 +8,5 @@ public interface IRolePermissionService {
     List<RolePermission> findAll();
 
     List<Long> findPermissionIdsByRoleId(Long roleId);
+
 }

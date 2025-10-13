@@ -10,6 +10,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name="message")
 public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

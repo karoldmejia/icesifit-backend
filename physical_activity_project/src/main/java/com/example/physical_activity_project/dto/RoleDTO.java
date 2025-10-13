@@ -16,5 +16,6 @@ public class RoleDTO {
     private Long id;
     private String name;
     private String description;
-    private List<Permission> permissions;  // IDs de permisos asociados
+    private List<Permission> permissions;
+
 }
