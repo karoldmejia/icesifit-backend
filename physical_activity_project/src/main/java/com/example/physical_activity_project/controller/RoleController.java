@@ -41,8 +41,12 @@ public class RoleController {
         role.setName(roleDTO.getName());
         role.setDescription(roleDTO.getDescription());
 
-        // Convertir los IDs de permisos a objetos Permission
-        List<Permission> permisos = permissionService.getPermissionsByIds(roleDTO.getPermissionIds());
+        // Obtener IDs desde la lista de Permission
+        List<Long> permisoIds = roleDTO.getPermissions().stream()
+                .map(Permission::getId)
+                .toList();
+
+        List<Permission> permisos = permissionService.getPermissionsByIds(permisoIds);
 
         return roleService.save(role, permisos);
     }
@@ -54,7 +58,11 @@ public class RoleController {
         role.setName(roleDTO.getName());
         role.setDescription(roleDTO.getDescription());
 
-        List<Permission> permisos = permissionService.getPermissionsByIds(roleDTO.getPermissionIds());
+        List<Long> permisoIds = roleDTO.getPermissions().stream()
+                .map(Permission::getId)
+                .toList();
+
+        List<Permission> permisos = permissionService.getPermissionsByIds(permisoIds);
 
         return roleService.save(role, permisos);
     }

@@ -13,4 +13,5 @@ public interface IUserService {
     public Optional<User> getUserById(Long id);
     public void initializedUsers();
     public User changeUserRole(Long userId, Role newRole);
+    void deleteById(Long id);
 }

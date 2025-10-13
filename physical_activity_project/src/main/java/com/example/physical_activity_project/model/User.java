@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
+
 @Entity
 @Table(name = "USUARIO")
 @Data
@@ -24,6 +26,8 @@ public class User {
 
     private String password;
 
+    // Importante colocarlo en el MER
+    private Timestamp createdAt;
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
