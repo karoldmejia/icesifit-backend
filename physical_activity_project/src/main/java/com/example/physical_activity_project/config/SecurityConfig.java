@@ -27,6 +27,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@Import(PasswordConfig.class)
 public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
@@ -44,11 +45,6 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // Más recomendable y generalmente usado, no usar si aún no has hecho el proceso de encriptación
     }
 
     @Bean
