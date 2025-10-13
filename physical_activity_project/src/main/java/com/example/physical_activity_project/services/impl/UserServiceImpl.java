@@ -78,6 +78,10 @@ public class UserServiceImpl implements IUserService{
         return userRepository.save(user);
     }
 
+    @Override
+    public Optional<User> findByInstitutionalEmail(String institutionalEmail) {
+        return userRepository.findByInstitutionalEmail(institutionalEmail);
+    }
 
 }
 

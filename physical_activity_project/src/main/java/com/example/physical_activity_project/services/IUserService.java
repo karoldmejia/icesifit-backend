@@ -14,4 +14,5 @@ public interface IUserService {
     public void initializedUsers();
     public User changeUserRole(Long userId, Role newRole);
     void deleteById(Long id);
+    Optional<User> findByInstitutionalEmail(String institutionalEmail);
 }
