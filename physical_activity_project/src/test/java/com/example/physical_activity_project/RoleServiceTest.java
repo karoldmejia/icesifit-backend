@@ -13,6 +13,7 @@ import com.example.physical_activity_project.services.impl.RoleServiceImpl;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,7 +35,7 @@ public class RoleServiceTest {
 
     @BeforeEach
     void setUp() {
-        // Permisos de ejemplo
+
         permiso1 = new Permission();
         permiso1.setId(1L);
         permiso1.setName("PERMISO_1");
@@ -43,13 +44,12 @@ public class RoleServiceTest {
         permiso2.setId(2L);
         permiso2.setName("PERMISO_2");
 
-        // Rol simple
+
         role = new Role();
         role.setId(null);
         role.setName("PRUEBA");
         role.setDescription("Rol de prueba");
 
-        // Rol guardado (simula base de datos)
         savedRole = new Role();
         savedRole.setId(1L);
         savedRole.setName("PRUEBA");
@@ -84,19 +84,22 @@ public class RoleServiceTest {
     }
 
     @Test
-    void saveRole_withoutPermissions_throwsException() {
-        Role role = new Role();
-        role.setName("RolTest");
-        role.setDescription("Rol de prueba");
-        // Caso 1: lista de permisos nula
-        RuntimeException exception1 = assertThrows(RuntimeException.class, () ->
-                roleService.save(role, null));
-        assertEquals("El rol debe tener al menos un permiso", exception1.getMessage());
-        // Caso 2: lista de permisos vacía
-        RuntimeException exception2 = assertThrows(RuntimeException.class, () ->
-                roleService.save(role, List.of()));
-        assertEquals("El rol debe tener al menos un permiso", exception2.getMessage());
-    }
+void saveRole_withoutPermissions_throwsException() {
+    Role role = new Role();
+    role.setName("RolTest");
+    role.setDescription("Rol de prueba");
+
+
+    RuntimeException exception1 = assertThrows(RuntimeException.class, () ->
+            roleService.save(role, null));
+    assertEquals("Todo rol debe tener al menos un permiso asignado", exception1.getMessage());
+
+
+    RuntimeException exception2 = assertThrows(RuntimeException.class, () ->
+            roleService.save(role, List.of()));
+    assertEquals("Todo rol debe tener al menos un permiso asignado", exception2.getMessage());
+}
+
 
 
     @Test
@@ -186,10 +189,10 @@ public class RoleServiceTest {
 
         roleService.deleteById(1L);
 
-        // Verificamos que se eliminaron los permisos asociados
+
         verify(rolePermissionRepository, times(1)).deleteAllByRole(savedRole);
 
-        // Verificamos que se eliminó el rol
+
         verify(roleRepository, times(1)).delete(savedRole);
     }
 

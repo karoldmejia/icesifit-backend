@@ -26,13 +26,13 @@ class PermissionServiceTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        // Permiso de ejemplo
+
         permission = new Permission();
         permission.setId(1L);
         permission.setName("READ");
         permission.setDescription("Read access");
 
-        // Lista de permisos
+
         permissions = new ArrayList<>();
         permissions.add(permission);
         permissions.add(new Permission(2L, "WRITE", "Write access"));

@@ -1,6 +1,5 @@
 package com.example.physical_activity_project.services.impl;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 

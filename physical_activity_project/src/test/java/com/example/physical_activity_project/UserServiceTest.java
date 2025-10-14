@@ -192,4 +192,50 @@ class UserServiceTest {
         assertTrue(rawUser.getPassword().startsWith("encodedPassword"));
         verify(userRepository, times(1)).save(rawUser);
     }
+
+    @Test
+    void saveUser_alreadyEncodedPassword_doesNotReencode() {
+
+        user.setPassword("$2a$encodedPassword");
+
+        when(userRepository.save(any(User.class))).thenReturn(savedUser);
+
+        User result = userService.save(user);
+
+
+        verify(passwordEncoder, never()).encode(any());
+        verify(userRepository, times(1)).save(user);
+        assertNotNull(result);
+    }
+
+    @Test
+    void initializedUsers_skipsAlreadyEncodedPasswords() {
+        User encodedUser = new User();
+        encodedUser.setId(3L);
+        encodedUser.setName("Encoded");
+        encodedUser.setInstitutionalEmail("encoded@icesi.edu.co");
+        encodedUser.setPassword("$2a$hashedPassword");
+        encodedUser.setRole(role);
+
+        when(userRepository.findAll()).thenReturn(List.of(encodedUser));
+
+        userService.initializedUsers();
+
+
+        verify(passwordEncoder, never()).encode(any());
+        verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    void findByInstitutionalEmail_success() {
+        when(userRepository.findByInstitutionalEmail("karol@icesi.edu.co"))
+                .thenReturn(Optional.of(savedUser));
+
+        Optional<User> result = userService.findByInstitutionalEmail("karol@icesi.edu.co");
+
+        assertTrue(result.isPresent());
+        assertEquals("Karol", result.get().getName());
+        verify(userRepository, times(1)).findByInstitutionalEmail("karol@icesi.edu.co");
+    }
+
 }

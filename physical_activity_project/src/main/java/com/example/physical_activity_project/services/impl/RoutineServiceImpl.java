@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.physical_activity_project.model.Routine;
-import com.example.physical_activity_project.model.UserRoutine;
 import com.example.physical_activity_project.repository.IRoutineRepository;
 import com.example.physical_activity_project.services.IRoutineService;
 
