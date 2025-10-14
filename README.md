@@ -18,19 +18,31 @@ La Universidad Icesi requiere una plataforma centralizada que facilite el seguim
     ├── pom.xml
     ├── src
     │   ├── main
+    │   │   ├── frontend
+    │   │   │   ├── package.json
+    │   │   │   ├── package-lock.json
+    │   │   │   ├── postcss.config.js
+    │   │   │   ├── styles.css
+    │   │   │   └── tailwind.config.js
     │   │   ├── java
     │   │   │   └── com
     │   │   │       └── example
     │   │   │           └── physical_activity_project
     │   │   │               ├── config
-    │   │   │               │   ├── JwtConfig.java
+    │   │   │               │   ├── PasswordConfig.java
     │   │   │               │   └── SecurityConfig.java
     │   │   │               ├── controller
+    │   │   │               │   ├── mvc
+    │   │   │               │   │   ├── LoginMVCController.java
+    │   │   │               │   │   ├── PermissionMVCController.java
+    │   │   │               │   │   ├── RolMVCController.java
+    │   │   │               │   │   ├── SignUpMVCController.java
+    │   │   │               │   │   └── UserMVCController.java
     │   │   │               │   ├── PermissionController.java
     │   │   │               │   ├── RoleController.java
     │   │   │               │   └── UserController.java
     │   │   │               ├── dto
-    │   │   │               │   ├── LoginRequest.java
+    │   │   │               │   ├── ProgressDTO.java
     │   │   │               │   └── RoleDTO.java
     │   │   │               ├── model
     │   │   │               │   ├── Event.java
@@ -47,7 +59,6 @@ La Universidad Icesi requiere una plataforma centralizada que facilite el seguim
     │   │   │               │   ├── Routine.java
     │   │   │               │   ├── Schedule.java
     │   │   │               │   ├── Space.java
-    │   │   │               │   ├── Trainer.java
     │   │   │               │   ├── UserEvent.java
     │   │   │               │   ├── User.java
     │   │   │               │   ├── UserRoutine.java
@@ -68,31 +79,99 @@ La Universidad Icesi requiere una plataforma centralizada que facilite el seguim
     │   │   │               │   ├── IRoutineRepository.java
     │   │   │               │   ├── IScheduleRepository.java
     │   │   │               │   ├── ISpaceRepository.java
-    │   │   │               │   ├── ITrainerRepository.java
     │   │   │               │   ├── IUserEventRepository.java
     │   │   │               │   ├── IUserRepository.java
     │   │   │               │   ├── IUserRoutineRepository.java
     │   │   │               │   └── IUserTrainerAssignmentRepository.java
+    │   │   │               ├── security
+    │   │   │               │   ├── CustomUserDetails.java
+    │   │   │               │   └── SecurityAuthority.java
     │   │   │               ├── services
+    │   │   │               │   ├── auth
+    │   │   │               │   │   └── CustomUserDetailsService.java
     │   │   │               │   ├── impl
+    │   │   │               │   │   ├── ExerciseProgressServiceImpl.java
+    │   │   │               │   │   ├── ExerciseServiceImpl.java
     │   │   │               │   │   ├── PermissionServiceImpl.java
+    │   │   │               │   │   ├── RolePermissionServiceImpl.java
     │   │   │               │   │   ├── RoleServiceImpl.java
+    │   │   │               │   │   ├── RoutineExerciseServiceImpl.java
+    │   │   │               │   │   ├── RoutineServiceImpl.java
+    │   │   │               │   │   ├── UserRoutineServiceImpl.java
     │   │   │               │   │   └── UserServiceImpl.java
+    │   │   │               │   ├── IExerciseProgressService.java
+    │   │   │               │   ├── IExerciseService.java
     │   │   │               │   ├── IPermissionService.java
+    │   │   │               │   ├── IRolePermissionService.java
     │   │   │               │   ├── IRoleService.java
+    │   │   │               │   ├── IRoutineExerciseService.java
+    │   │   │               │   ├── IRoutineService.java
+    │   │   │               │   ├── IUserRoutineService.java
     │   │   │               │   └── IUserService.java
-    │   │   │               ├── ServletInitializer.java
-    │   │   │               └── util
-    │   │   │                   ├── JwtFilter.java
-    │   │   │                   └── JwtUtil.java
+    │   │   │               └── ServletInitializer.java
     │   │   └── resources
-    │   │       └── application.properties
+    │   │       ├── application.properties
+    │   │       ├── data.sql
+    │   │       ├── static
+    │   │       │   ├── css
+    │   │       │   │   ├── components
+    │   │       │   │   │   ├── header_user_mngmt.css
+    │   │       │   │   │   └── main.css
+    │   │       │   │   └── users
+    │   │       │   │       ├── forms.css
+    │   │       │   │       ├── personas.css
+    │   │       │   │       └── styles.css
+    │   │       │   ├── images
+    │   │       │   │   └── logo
+    │   │       │   │   │   ├── icesifit_logo_blanco.svg
+    │   │       │   │   │   ├── icesifit_logo_negro.svg
+    │   │       │   │   │   └── icesifit_logo_verde.svg
+    │   │       │   │   ├── login_1.png
+    │   │       │   │   ├── login_2.png
+    │   │       │   │   └── login_3.png
+    │   │       │   ├── js
+    │   │       │   │   └── users
+    │   │       │   │       └── scripts.js
+    │   │       │   └── main.css
+    │   │       └── templates
+    │   │           ├── admin
+    │   │           │   └── headers
+    │   │           │   │   └── header_user_mngmt.html
+    │   │           │   ├── permissions
+    │   │           │   │   ├── add.html
+    │   │           │   │   ├── edit.html
+    │   │           │   │   └── list.html
+    │   │           │   ├── roles
+    │   │           │   │   ├── add.html
+    │   │           │   │   ├── edit.html
+    │   │           │   │   └── list.html
+    │   │           │   ├── users
+    │   │           │   │   ├── add.html
+    │   │           │   │   ├── edit.html
+    │   │           │   │   └── list.html
+    │   │           ├── login
+    │   │           │   ├── login.html
+    │   │           │   └── signup.html
+    │   │           ├── trainer
+    │   │           │   └── dashboard.html
+    │   │           └── user
+    │   │               └── dashboard.html
     │   └── test
-    │       └── java
-    │           └── com
-    │               └── example
-    │                   └── physical_activity_project
-    │                       └── PhysicalActivityProjectApplicationTests.java
+    │       ├── java
+    │       │   └── com
+    │       │       └── example
+    │       │           └── physical_activity_project
+    │       │               ├── ExerciseProgressServiceImplTest.java
+    │       │               ├── ExerciseServiceImplTest.java
+    │       │               ├── PermissionServiceTest.java
+    │       │               ├── RolePermissionServiceImplTest.java
+    │       │               ├── RoleServiceTest.java
+    │       │               ├── RoutineExerciseServiceImplTest.java
+    │       │               ├── RoutineServiceImplTest.java
+    │       │               ├── UserRoutineServiceTest.java
+    │       │               └── UserServiceTest.java
+    │       └── resources
+    │           └── application-test.properties
 
 ### Requisitos previos
 *   Java Development Kit (JDK) 17 o superior.
@@ -140,11 +219,15 @@ La consola de H2 estará disponible en:
     
         ./mvnw clean spring-boot:run
 
+### Despliegue
+Se desplegó el proyecto en el equipo 105 del salon 104M. La dirección para acceder es:
+`192.168.131.105:8080/icesiFit`
+
 
 ### Pruebas y cobertura
 - Ejecutar pruebas:
     
-        maven test
+        mvn test
 
 - Reporte de cobertura con JaCoCo:
     
