@@ -3,8 +3,10 @@ package com.example.physical_activity_project.services.impl;
 import com.example.physical_activity_project.model.Permission;
 import com.example.physical_activity_project.model.Role;
 import com.example.physical_activity_project.model.RolePermission;
+import com.example.physical_activity_project.model.User;
 import com.example.physical_activity_project.repository.IRolePermissionRepository;
 import com.example.physical_activity_project.repository.IRoleRepository;
+import com.example.physical_activity_project.repository.IUserRepository;
 import com.example.physical_activity_project.services.IRoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ public class RoleServiceImpl implements IRoleService {
 
     private final IRoleRepository roleRepository;
     private final IRolePermissionRepository rolePermissionRepository;
+    private final IUserRepository userRepository;
 
     @Transactional(readOnly = true)
     public List<Permission> getPermissions(Long roleId) {
@@ -70,9 +73,21 @@ public class RoleServiceImpl implements IRoleService {
     public void deleteById(Long id) {
         Role role = roleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+        if ("User".equalsIgnoreCase(role.getName())) {
+            throw new RuntimeException("¡El rol user no puede ser eliminado!");
+        }
+        Role userRole = roleRepository.findByName("User")
+                .orElseThrow(() -> new RuntimeException("Rol USER no encontrado"));
+        if (role.getUsers() != null) {
+            for (User user : role.getUsers()) {
+                user.setRole(userRole);
+                userRepository.save(user);
+            }
+        }
         rolePermissionRepository.deleteAllByRole(role);
         roleRepository.delete(role);
     }
+
 
     @Transactional
     public Role addPermissionToRole(Long roleId, Permission permission) {

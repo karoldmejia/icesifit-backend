@@ -84,8 +84,15 @@ public class UserMVCController {
     }
 
     @GetMapping("/delete")
-    public String deleteUser(@RequestParam Long id) {
-        userService.deleteById(id);
-        return "redirect:/mvc/users";
+    public String deleteUser(@RequestParam Long id, Model model) {
+        try {
+            userService.deleteById(id);
+            return "redirect:/mvc/users";
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("users", userService.getAllUsers());
+            return "admin/users/list";
+        }
     }
+
 }

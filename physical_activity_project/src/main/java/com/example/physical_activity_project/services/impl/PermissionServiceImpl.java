@@ -2,6 +2,7 @@ package com.example.physical_activity_project.services.impl;
 
 
 import com.example.physical_activity_project.repository.IPermissionRepository;
+import com.example.physical_activity_project.repository.IRolePermissionRepository;
 import com.example.physical_activity_project.services.IPermissionService;
 import com.example.physical_activity_project.model.Permission;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ public class PermissionServiceImpl implements IPermissionService {
 
     @Autowired
     private IPermissionRepository permissionRepository;
+    @Autowired
+    private IRolePermissionRepository rolePermissionRepository;
 
     @Override
     public List<Permission> findAll() {
@@ -46,8 +49,10 @@ public class PermissionServiceImpl implements IPermissionService {
 
     @Override
     public void deleteById(Long id) {
+        rolePermissionRepository.deleteAllByPermissionId(id);
         permissionRepository.deleteById(id);
     }
+
 
     @Override
     public List<Permission> getPermissionsByIds(List<Long> ids) {

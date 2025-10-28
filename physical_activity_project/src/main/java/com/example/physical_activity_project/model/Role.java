@@ -28,7 +28,7 @@ public class Role {
     @JsonIgnore
     private List<RolePermission> rolePermissions;
 
-    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "role", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JsonIgnore
     private List<User> users;
 }

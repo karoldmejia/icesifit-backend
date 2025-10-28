@@ -114,9 +114,14 @@ public class RolMVCController {
     }
 
     @GetMapping("/delete")
-    public String deleteUser(@RequestParam Long id) {
-        roleService.deleteById(id);
-        return "redirect:/mvc/roles";
+    public String deleteRole(@RequestParam Long id, Model model) {
+        try {
+            roleService.deleteById(id);
+            return "redirect:/mvc/roles";
+        } catch (RuntimeException e) {
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("roles", roleService.getAllRoles());
+            return "admin/roles/list";
+        }
     }
-
 }
