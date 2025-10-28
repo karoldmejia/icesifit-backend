@@ -1,99 +1,97 @@
 package com.example.physical_activity_project.config;
 
-import com.example.physical_activity_project.model.Role;
-import com.example.physical_activity_project.services.auth.CustomUserDetailsService;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
-import org.springframework.context.annotation.Import;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
-import org.springframework.security.core.userdetails.User;
-import lombok.RequiredArgsConstructor;
+import com.example.physical_activity_project.security.CustomUserDetailsService;
+import com.example.physical_activity_project.security.filters.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+
 
 @Configuration
-@EnableWebSecurity
-@RequiredArgsConstructor
-@Import(PasswordConfig.class)
+@EnableMethodSecurity
 public class SecurityConfig {
 
-    private final CustomUserDetailsService customUserDetailsService;
-    private final PasswordEncoder passwordEncoder;
-
-
     @Bean
-    public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(customUserDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder);
-        return authProvider;
+    public UserDetailsService userDetailsService() {
+        return new CustomUserDetailsService();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter();
+    }
+
+    @Bean
+    @Order(1)
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/h2-console/**")
-                )
-                .authenticationProvider(authenticationProvider())
+                .securityMatcher("/mvc/**")
                 .authorizeHttpRequests(authz -> authz
-                        // Recursos públicos
-                        .requestMatchers("/main.css", "/css/**", "/js/**", "/images/**").permitAll()
-                        .requestMatchers("/mvc/login", "/mvc/signup/form").permitAll()
-                        .requestMatchers("POST", "/mvc/signup/form").permitAll()
-                        .requestMatchers("/h2-console/**").permitAll() // Para H2 en desarrollo
-
-                        // Endpoints específicos por roles
-                        .requestMatchers("/mvc/users/").hasRole("Admin")
-                        .requestMatchers("/mvc/trainer/**").hasRole("Trainer")
-                        .requestMatchers("/mvc/users/add", "/mvc/users/edit/**", "/mvc/users/delete/**")
-                        .hasRole("Admin")
-                        .requestMatchers("/mvc/roles/**", "/mvc/permissions/**").hasRole("Admin")
-
-                        // Cualquier otra solicitud requiere autenticación
+                        .requestMatchers("/mvc/**").permitAll()
+                        .requestMatchers("/mvc/login", "/css/**", "/js/**").permitAll()
+                        .requestMatchers("/h2-console/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/mvc/login")
-                        .loginProcessingUrl("/mvc/authenticate")
-                        .defaultSuccessUrl("/mvc/users", true) //Cambiar a false cuando tengamos vistas diferentes para cada rol
-                        .failureUrl("/mvc/login?error=true")
-                        .usernameParameter("username")
-                        .passwordParameter("password")
+                        .loginPage("/mvc/login")           // URL personalizada para mostrar login
+                        .loginProcessingUrl("/mvc/login")  // URL que procesa el login
+                        .defaultSuccessUrl("/mvc/users", true)  // Redirección después del login exitoso
+                        .failureUrl("/mvc/login?error")    // Redirección en caso de error
+                        .usernameParameter("username") // Nombre del campo username
+                        .passwordParameter("password") // Nombre del campo password
                         .permitAll()
                 )
-                .headers(headers -> headers
-                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin
-                        )
-                )
                 .logout(logout -> logout
-                        .logoutUrl("/mvc/logout")
-                        .logoutSuccessUrl("/mvc/login?logout=true")
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/mvc/login?logout")
                         .permitAll()
                 )
                 .build();
     }
 
+    @Bean
+    @Order(2)
+    public SecurityFilterChain securityRestFilterChain(HttpSecurity http) throws Exception {
+        return http
+                .securityMatcher("/api/**")
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .authorizeHttpRequests(authz -> authz
+                        .requestMatchers("/api/**").permitAll()
+                        .requestMatchers("/h2-console/**").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .headers(headers -> headers.frameOptions(frame -> frame.disable())) // Para acceder a H2 Console
+                .sessionManagement(t -> t.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // No tener sesiones stateful
+                .build();
+    }
 
-
+    private CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowCredentials(true); // Permitir credenciales, esto significa que las cookies, encabezados de autorización o certificados TLS pueden ser incluidos en las solicitudes
+        configuration.addAllowedOriginPattern("*"); // Permitir cualquier origen
+        configuration.addAllowedHeader("*"); // Permitir cualquier encabezado
+        configuration.addAllowedMethod("*"); // Permitir cualquier método (GET, POST, PUT, DELETE, etc.)
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 }

@@ -55,4 +55,11 @@ public class RoutineServiceImpl implements IRoutineService {
     public List<Routine> getAllRoutines() {
         return routineRepository.findAll();
     }
+
+    @Override
+    public Routine getRoutineById(Long id) {
+        return routineRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Routine not found with id: " + id));
+    }
+
 }

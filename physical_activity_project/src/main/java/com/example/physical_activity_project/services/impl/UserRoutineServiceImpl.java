@@ -60,4 +60,11 @@ public class UserRoutineServiceImpl implements IUserRoutineService {
     public List<UserRoutine> getAllUserRoutines() {
         return userRoutineRepository.findAll();
     }
+
+    @Override
+    public UserRoutine getUserRoutineById(Long id) {
+        return userRoutineRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("UserRoutine not found with id: " + id));
+    }
+
 }

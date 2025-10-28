@@ -9,4 +9,5 @@ public interface IRoutineService {
     void deleteRoutine(Long id);
     List<Routine> getRoutinesByUser(Long userId);
     List<Routine> getAllRoutines();
+    Routine getRoutineById(Long id);
 }

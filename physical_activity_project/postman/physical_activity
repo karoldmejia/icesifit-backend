@@ -1,0 +1,61 @@
+{
+	"info": {
+		"_postman_id": "bdd1eed6-d670-474c-9a32-e77fdf30bbe3",
+		"name": "physical_activity",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "44315998",
+		"_collection_link": "https://karold-1697951.postman.co/workspace/karold's-Workspace~739811dc-6776-4df9-828c-f28d0a1bf593/collection/44315998-bdd1eed6-d670-474c-9a32-e77fdf30bbe3?action=share&source=collection_link&creator=44315998"
+	},
+	"item": [
+		{
+			"name": "login",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "create_exercise",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzM4NCJ9.eyJqdGkiOiIxIiwiZW1haWwiOiJsYXVyYS5nb21lekBpY2VzaS5lZHUuY28iLCJhdXRob3JpdGllcyI6WyJDUkVBUl9SVVRJTkEiLCJFRElUQVJfUlVUSU5BIiwiUkVHSVNUUkFSX1BST0dSRVNPIiwiQ09OU1VMVEFSX0VWRU5UT1MiLCJFTlZJQVJfTUVOU0FKRSIsIkNSRUFSX1JVVElOQV9QUkVERUZJTklEQSIsIkdFU1RJT05BUl9FTlRSRU5BRE9SRVMiLCJHRVNUSU9OQVJfRVZFTlRPUyIsIkdFU1RJT05BUl9FSkVSQ0lDSU9TIl0sInVzZXJuYW1lIjoiTGF1cmEgR8ODwrNtZXoiLCJzdWIiOiJMYXVyYSBHw4PCs21leiIsImlhdCI6MTc2MTY3ODY1MSwiZXhwIjoxNzYxNjgyMjUxfQ.OrnSb1h7aM8wva1UZPNY7RVUv92qdAfuekKQyN7nPy3JH5bWITyesFsjfmFvj43g",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

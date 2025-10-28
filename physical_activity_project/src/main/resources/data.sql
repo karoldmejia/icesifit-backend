@@ -1,9 +1,13 @@
+-- ==========================================
 -- ROLES
+-- ==========================================
 INSERT INTO role (name, description) VALUES ('Admin', 'Administrador de la plataforma');
 INSERT INTO role (name, description) VALUES ('Trainer', 'Entrenador certificado');
 INSERT INTO role (name, description) VALUES ('User', 'Usuario regular');
 
+-- ==========================================
 -- PERMISSIONS
+-- ==========================================
 INSERT INTO permission (name, description) VALUES ('CREAR_RUTINA', 'Permite crear rutinas personalizadas');
 INSERT INTO permission (name, description) VALUES ('EDITAR_RUTINA', 'Permite modificar rutinas propias');
 INSERT INTO permission (name, description) VALUES ('REGISTRAR_PROGRESO', 'Permite registrar avances de entrenamiento');
@@ -14,39 +18,36 @@ INSERT INTO permission (name, description) VALUES ('GESTIONAR_ENTRENADORES', 'Pe
 INSERT INTO permission (name, description) VALUES ('GESTIONAR_EVENTOS', 'Permite administrar eventos y talleres');
 INSERT INTO permission (name, description) VALUES ('GESTIONAR_EJERCICIOS', 'Permite administrar la base de datos de ejercicios');
 
+-- ==========================================
 -- ROLE_PERMISSION
-
+-- ==========================================
 -- Permisos del User
-INSERT INTO role_permission (role_id, permission_id) VALUES (3, 1); -- CREAR_RUTINA
-INSERT INTO role_permission (role_id, permission_id) VALUES (3, 2); -- EDITAR_RUTINA
-INSERT INTO role_permission (role_id, permission_id) VALUES (3, 3); -- REGISTRAR_PROGRESO
-INSERT INTO role_permission (role_id, permission_id) VALUES (3, 4); -- CONSULTAR_EVENTOS
+INSERT INTO role_permission (role_id, permission_id) VALUES (3, 1);
+INSERT INTO role_permission (role_id, permission_id) VALUES (3, 2);
+INSERT INTO role_permission (role_id, permission_id) VALUES (3, 3);
+INSERT INTO role_permission (role_id, permission_id) VALUES (3, 4);
 
 -- Permisos del Trainer
-INSERT INTO role_permission (role_id, permission_id) VALUES (2, 4); -- CONSULTAR_EVENTOS
-INSERT INTO role_permission (role_id, permission_id) VALUES (2, 5); -- ENVIAR_MENSAJE
-INSERT INTO role_permission (role_id, permission_id) VALUES (2, 6); -- CREAR_RUTINA_PREDEFINIDA
+INSERT INTO role_permission (role_id, permission_id) VALUES (2, 4);
+INSERT INTO role_permission (role_id, permission_id) VALUES (2, 5);
+INSERT INTO role_permission (role_id, permission_id) VALUES (2, 6);
 
 -- Permisos del Admin
-INSERT INTO role_permission (role_id, permission_id) VALUES (1, 7); -- GESTIONAR_ENTRENADORES
-INSERT INTO role_permission (role_id, permission_id) VALUES (1, 8); -- GESTIONAR_EVENTOS
-INSERT INTO role_permission (role_id, permission_id) VALUES (1, 9); -- GESTIONAR_EJERCICIOS
--- darle todos los permisos al Admin
 INSERT INTO role_permission (role_id, permission_id)
 SELECT 1, id FROM permission;
 
--- ADMIN
+-- ==========================================
+-- USERS
+-- ==========================================
 INSERT INTO users (name, institutional_email, password, role_id)
 VALUES ('Laura Gómez', 'laura.gomez@icesi.edu.co', '$2a$10$9QuciCPq5653XQ6UPRXZg.2JJNcnlT0xf77qJElXvxs/CJ4vn.QbC', 1); -- admin123
 
--- TRAINERS
 INSERT INTO users (name, institutional_email, password, role_id)
 VALUES ('Carlos Pérez', 'carlos.perez@icesi.edu.co', '$2a$10$vCio5BX5mhoOZ95P3L7KFOGql6Jxk02681SzucsJPHfhx/VgAnjci', 2); -- trainer123
 
 INSERT INTO users (name, institutional_email, password, role_id)
 VALUES ('María Torres', 'maria.torres@icesi.edu.co', '$2a$10$MkPykRXbi1wSnB8o9srD7u2x/aFiVdzk1YpVcer0B.Vp9f4r7R1P2', 2); -- trainer456
 
--- STUDENTS
 INSERT INTO users (name, institutional_email, password, role_id)
 VALUES ('Andrés Ríos', 'andres.rios@icesi.edu.co', '$2a$10$isF/7qudQBv.TrVsuype/.AcuW6Ixb1QMCbRyLKbeHbjlE26OCl1y', 3); -- user123
 
@@ -54,6 +55,64 @@ INSERT INTO users (name, institutional_email, password, role_id)
 VALUES ('Camila Díaz', 'camila.diaz@icesi.edu.co', '$2a$10$L5lkZ7188Z4Hv.yVPxMIOeZy0iLtWrgYABWz3uBII11.yfKakNvzS', 3); -- user456
 
 INSERT INTO users (name, institutional_email, password, role_id)
-VALUES ('Juan Martínez', 'juan.martinez@icesi.edu.co', '$2a$10$cq0QO4gQ8wL0hIWTEKPjGuG3Wy1180IaSlIS0SU0QFLWQOBrUO/Hm', 3); --user789
+VALUES ('Juan Martínez', 'juan.martinez@icesi.edu.co', '$2a$10$cq0QO4gQ8wL0hIWTEKPjGuG3Wy1180IaSlIS0SU0QFLWQOBrUO/Hm', 3); -- user789
 
+-- ==========================================
+-- ROUTINES
+-- ==========================================
+INSERT INTO routine (name, creation_date, certified)
+VALUES ('Rutina de Fuerza Básica', CURRENT_TIMESTAMP, true);
 
+INSERT INTO routine (name, creation_date, certified)
+VALUES ('Rutina de Cardio Ligero', CURRENT_TIMESTAMP, false);
+
+-- ==========================================
+-- EXERCISES
+-- ==========================================
+INSERT INTO exercise (name, type, description, duration, difficulty, video_url)
+VALUES ('Sentadillas', 'Fuerza', 'Ejercicio para piernas y glúteos', 10.0, 'Media', 'https://videos.ejemplo.com/sentadillas.mp4');
+
+INSERT INTO exercise (name, type, description, duration, difficulty, video_url)
+VALUES ('Plancha', 'Resistencia', 'Fortalece el core y los brazos', 5.0, 'Alta', 'https://videos.ejemplo.com/plancha.mp4');
+
+INSERT INTO exercise (name, type, description, duration, difficulty, video_url)
+VALUES ('Caminata rápida', 'Cardio', 'Ejercicio aeróbico suave', 20.0, 'Baja', 'https://videos.ejemplo.com/caminata.mp4');
+
+-- ==========================================
+-- ROUTINE_EXERCISES
+-- ==========================================
+INSERT INTO routine_exercise (sets, reps, time, exercise_id, routine_id)
+VALUES (3, 15, NULL, 1, 1);
+
+INSERT INTO routine_exercise (sets, reps, time, exercise_id, routine_id)
+VALUES (3, NULL, 30, 2, 1);
+
+INSERT INTO routine_exercise (sets, reps, time, exercise_id, routine_id)
+VALUES (1, NULL, 20, 3, 2);
+
+-- ==========================================
+-- USER_TRAINER_ASSIGNMENTS
+-- ==========================================
+INSERT INTO user_trainer_assignment (assignment_date, status, trainer_id, user_id)
+VALUES (CURRENT_TIMESTAMP, 'ACTIVE', 2, 4); -- Carlos -> Andrés
+
+INSERT INTO user_trainer_assignment (assignment_date, status, trainer_id, user_id)
+VALUES (CURRENT_TIMESTAMP, 'PENDING', 3, 5); -- María -> Camila
+
+-- ==========================================
+-- USER_ROUTINES
+-- ==========================================
+INSERT INTO user_routine (assignment_date, status, routine_id, user_id)
+VALUES (CURRENT_TIMESTAMP, true, 1, 4);
+
+INSERT INTO user_routine (assignment_date, status, routine_id, user_id)
+VALUES (CURRENT_TIMESTAMP, false, 2, 5);
+
+-- ==========================================
+-- EXERCISE_PROGRESS
+-- ==========================================
+INSERT INTO exercise_progress (progress_date, sets_completed, reps_completed, time_completed, effort_level, user_id, routine_exercise_id)
+VALUES (CURRENT_TIMESTAMP, 3, 15, NULL, 8, 4, 1);
+
+INSERT INTO exercise_progress (progress_date, sets_completed, reps_completed, time_completed, effort_level, user_id, routine_exercise_id)
+VALUES (CURRENT_TIMESTAMP, 1, NULL, 20, 5, 5, 3);

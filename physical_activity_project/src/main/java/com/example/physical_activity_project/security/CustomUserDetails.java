@@ -1,45 +1,43 @@
 package com.example.physical_activity_project.security;
 
-import com.example.physical_activity_project.model.RolePermission;
-import com.example.physical_activity_project.model.User;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import com.example.physical_activity_project.model.RolePermission;
+import com.example.physical_activity_project.model.User;
+
+import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class CustomUserDetails implements UserDetails {
+
     private final User user;
 
     @Override
-    public String getUsername() {
-        return user.getInstitutionalEmail();
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // Mapea los permisos de tu rol a GrantedAuthority
+        List<SecurityAuthority> authorities = user.getRole().getRolePermissions().stream()
+                .map(RolePermission::getPermission)
+                .map(SecurityAuthority::new)
+                .toList();
+        return authorities;
     }
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return user.getPassword(); // tu campo se llama password
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> authorities = new ArrayList<>();
+    public String getUsername() {
+        return user.getInstitutionalEmail(); // normalmente usamos el email como username
+    }
 
-        authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole().getName()));
-
-        if (user.getRole().getRolePermissions() != null) {
-            user.getRole().getRolePermissions().forEach(rolePermission -> {
-                authorities.add(new SimpleGrantedAuthority(rolePermission.getPermission().getName()));
-            });
-        }
-
-        return authorities;
+    public User getUser() {
+        return user;
     }
 
     @Override
