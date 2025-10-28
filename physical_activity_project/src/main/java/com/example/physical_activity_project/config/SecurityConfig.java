@@ -2,11 +2,17 @@ package com.example.physical_activity_project.config;
 
 import com.example.physical_activity_project.security.CustomUserDetailsService;
 import com.example.physical_activity_project.security.filters.JwtAuthenticationFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,15 +23,18 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-
+import java.util.List;
 
 @Configuration
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final CustomUserDetailsService customUserDetailsService;
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return new CustomUserDetailsService();
+        return customUserDetailsService;
     }
 
     @Bean
@@ -34,41 +43,66 @@ public class SecurityConfig {
     }
 
     @Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(customUserDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
+
+    @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
         return new JwtAuthenticationFilter();
     }
 
+    // Seguridad para MVC (Form Login + Roles)
     @Bean
     @Order(1)
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain mvcSecurityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .securityMatcher("/mvc/**")
+                .authenticationProvider(authenticationProvider())
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/mvc/**").permitAll()
-                        .requestMatchers("/mvc/login", "/css/**", "/js/**").permitAll()
-                        .requestMatchers("/h2-console/**").permitAll()
+                        // Recursos públicos
+                        .requestMatchers("/mvc/login", "/mvc/signup/form", "/css/**", "/js/**", "/images/**").permitAll()
+                        // Endpoints por roles
+                        .requestMatchers("/mvc/users/").hasRole("Admin")
+                        .requestMatchers("/mvc/users/add", "/mvc/users/edit/**", "/mvc/users/delete/**").hasRole("Admin")
+                        .requestMatchers("/mvc/trainer/**").hasRole("Trainer")
+                        .requestMatchers("/mvc/roles/**", "/mvc/permissions/**").hasRole("Admin")
+                        // Cualquier otra solicitud requiere autenticación
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/mvc/login")           // URL personalizada para mostrar login
-                        .loginProcessingUrl("/mvc/login")  // URL que procesa el login
-                        .defaultSuccessUrl("/mvc/users", true)  // Redirección después del login exitoso
-                        .failureUrl("/mvc/login?error")    // Redirección en caso de error
-                        .usernameParameter("username") // Nombre del campo username
-                        .passwordParameter("password") // Nombre del campo password
+                        .loginPage("/mvc/login")
+                        .loginProcessingUrl("/mvc/authenticate") // Debe coincidir con el action del form
+                        .defaultSuccessUrl("/mvc/users", true)
+                        .failureUrl("/mvc/login?error=true")
+                        .usernameParameter("username")
+                        .passwordParameter("password")
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/mvc/login?logout")
+                        .logoutUrl("/mvc/logout")
+                        .logoutSuccessUrl("/mvc/login?logout=true")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
                         .permitAll()
                 )
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
+                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .build();
     }
 
+    // Seguridad para REST (JWT)
     @Bean
     @Order(2)
-    public SecurityFilterChain securityRestFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain restSecurityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .securityMatcher("/api/**")
                 .csrf(csrf -> csrf.disable())
@@ -79,17 +113,20 @@ public class SecurityConfig {
                         .requestMatchers("/h2-console/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .headers(headers -> headers.frameOptions(frame -> frame.disable())) // Para acceder a H2 Console
-                .sessionManagement(t -> t.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // No tener sesiones stateful
+                .headers(headers -> headers.frameOptions(frame -> frame.disable()))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
     }
 
+    // ========================================
+    // Configuración CORS para REST
+    // ========================================
     private CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowCredentials(true); // Permitir credenciales, esto significa que las cookies, encabezados de autorización o certificados TLS pueden ser incluidos en las solicitudes
-        configuration.addAllowedOriginPattern("*"); // Permitir cualquier origen
-        configuration.addAllowedHeader("*"); // Permitir cualquier encabezado
-        configuration.addAllowedMethod("*"); // Permitir cualquier método (GET, POST, PUT, DELETE, etc.)
+        configuration.setAllowCredentials(true);
+        configuration.setAllowedOriginPatterns(List.of("*"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowedMethods(List.of("*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

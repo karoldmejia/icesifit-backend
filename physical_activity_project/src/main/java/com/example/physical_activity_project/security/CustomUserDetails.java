@@ -1,15 +1,15 @@
 package com.example.physical_activity_project.security;
 
-import java.util.Collection;
-import java.util.List;
-
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import com.example.physical_activity_project.model.RolePermission;
 import com.example.physical_activity_project.model.User;
-
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @AllArgsConstructor
 public class CustomUserDetails implements UserDetails {
@@ -18,22 +18,29 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Mapea los permisos de tu rol a GrantedAuthority
-        List<SecurityAuthority> authorities = user.getRole().getRolePermissions().stream()
-                .map(RolePermission::getPermission)
-                .map(SecurityAuthority::new)
-                .toList();
+        List<GrantedAuthority> authorities = new ArrayList<>();
+
+        // Agregamos el rol principal con prefijo ROLE_ (para MVC y hasRole)
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole().getName()));
+
+        // Agregamos los permisos específicos del rol (para control fino)
+        if (user.getRole().getRolePermissions() != null) {
+            for (RolePermission rp : user.getRole().getRolePermissions()) {
+                authorities.add(new SimpleGrantedAuthority(rp.getPermission().getName()));
+            }
+        }
+
         return authorities;
     }
 
     @Override
     public String getPassword() {
-        return user.getPassword(); // tu campo se llama password
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return user.getInstitutionalEmail(); // normalmente usamos el email como username
+        return user.getInstitutionalEmail();
     }
 
     public User getUser() {
