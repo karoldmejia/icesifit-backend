@@ -83,5 +83,18 @@ public class UserEventServiceImpl implements IUserEventService {
                 Math.toIntExact(userEventId)
         );
     }
+
+    @Override
+    public List<UserEvent> getAllUserEvents() {
+        return userEventRepository.findAll();
+    }
+
+    @Override
+    public List<UserEvent> getUserEventsByEvent(Long eventId) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new RuntimeException("Event not found"));
+        return userEventRepository.findByEventId(event.getId());
+    }
+
 }
 

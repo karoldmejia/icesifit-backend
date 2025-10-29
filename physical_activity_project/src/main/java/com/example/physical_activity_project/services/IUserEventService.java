@@ -9,4 +9,6 @@ public interface IUserEventService {
     List<UserEvent> getUserEvents(Long userId);
     UserEvent markAttendance(Long userEventId, Boolean attended);
     void cancelRegistration(Long userEventId);
+    List<UserEvent> getAllUserEvents();
+    List<UserEvent> getUserEventsByEvent(Long eventId);
 }

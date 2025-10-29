@@ -10,5 +10,7 @@ import java.util.Optional;
 
 public interface IUserEventRepository extends JpaRepository<UserEvent, Long> {
     List<UserEvent> findByUserId(Long userId);
+    List<UserEvent> findByEventId(Long eventId);
+
 
 }

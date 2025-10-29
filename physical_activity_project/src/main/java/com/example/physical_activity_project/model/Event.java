@@ -30,8 +30,6 @@ public class Event {
     private Timestamp endDate;
     @Column(name = "capacity", nullable = false)
     private Integer capacity;
-    @Column(name = "location", nullable = true)
-    private String location;
     @Column(name = "description", nullable = true)
     private String description;
 

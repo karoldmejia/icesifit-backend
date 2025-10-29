@@ -24,8 +24,7 @@ public class EventServiceImpl implements IEventService {
     public Event createEvent(Event event) {
         Event saved = eventRepository.save(event);
 
-        notificationService.sendNotification(
-                0L,
+        notificationService.sendNotificationToAll(
                 "¡Nuevo evento disponible: " + saved.getName() + "!",
                 "EVENT_CREATE",
                 Math.toIntExact(saved.getId())
@@ -54,13 +53,11 @@ public class EventServiceImpl implements IEventService {
         existing.setStartDate(updated.getStartDate());
         existing.setEndDate(updated.getEndDate());
         existing.setCapacity(updated.getCapacity());
-        existing.setLocation(updated.getLocation());
         existing.setDescription(updated.getDescription());
 
         Event saved = eventRepository.save(existing);
 
-        notificationService.sendNotification(
-                0L,
+        notificationService.sendNotificationToAll(
                 "El evento '" + saved.getName() + "' ha sido actualizado.",
                 "EVENT_UPDATE",
                 Math.toIntExact(saved.getId())
@@ -74,8 +71,7 @@ public class EventServiceImpl implements IEventService {
         Event existing = getEventById(id);
         eventRepository.delete(existing);
 
-        notificationService.sendNotification(
-                0L,
+        notificationService.sendNotificationToAll(
                 "El evento '" + existing.getName() + "' ha sido cancelado.",
                 "EVENT_DELETE",
                 Math.toIntExact(id)

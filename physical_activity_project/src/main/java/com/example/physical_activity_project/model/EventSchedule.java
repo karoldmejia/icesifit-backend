@@ -30,6 +30,4 @@ public class EventSchedule {
     @JoinColumn(name = "event_id", nullable = false)
     private Event event;
 
-
-
 }

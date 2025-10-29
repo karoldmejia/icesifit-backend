@@ -2086,8 +2086,693 @@
 			]
 		},
 		{
+			"name": "EventControllerTests",
+			"item": [
+				{
+					"name": "create_event",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+									"\r",
+									"const res = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Event ID exists\", () => {\r",
+									"    pm.expect(res.id).to.be.a(\"number\");\r",
+									"    pm.environment.set(\"event_id\", res.id);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Event fields match input\", () => {\r",
+									"    pm.expect(res.name).to.eql(pm.environment.get(\"event_name\"));\r",
+									"    pm.expect(res.type).to.eql(pm.environment.get(\"event_type\"));\r",
+									"    pm.expect(res.capacity).to.eql(Number(pm.environment.get(\"capacity\")));\r",
+									"    pm.expect(res.description).to.eql(pm.environment.get(\"description\"));\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"{{event_name}}\",\r\n    \"type\": \"{{event_type}}\",\r\n    \"startDate\": \"{{start_date_event}}\",\r\n    \"endDate\": \"{{end_date_event}}\",\r\n    \"capacity\": {{capacity}},\r\n    \"description\": \"{{description}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/events",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_all_events",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+									"\r",
+									"const res = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Response is an array\", () => pm.expect(res).to.be.an(\"array\"));\r",
+									"\r",
+									"pm.test(\"Created event exists in array\", () => {\r",
+									"    const found = res.some(e => e.id === Number(pm.environment.get(\"event_id\")));\r",
+									"    pm.expect(found).to.be.true;\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/events",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_one_event",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+									"\r",
+									"const res = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Event name matches\", () => {\r",
+									"    pm.expect(res.name).to.eql(pm.environment.get(\"event_name\"));\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/events/{{event_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"events",
+								"{{event_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update_event",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+									"\r",
+									"const res = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Event updated correctly\", () => {\r",
+									"    pm.expect(res.name).to.include(\"UPDATED\");\r",
+									"    pm.expect(res.capacity).to.eql(10);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Yoga matutina UPDATED\",\r\n    \"type\": \"Yoga\",\r\n    \"startDate\": \"{{start_date_event}}\",\r\n    \"endDate\": \"{{end_date_event}}\",\r\n    \"capacity\": 10,\r\n    \"description\": \"Clase de yoga UPDATED\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/events/{{event_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"events",
+								"{{event_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "EventScheduleControllerTests",
+			"item": [
+				{
+					"name": "create_schedule",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+									"\r",
+									"const res = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Event schedule ID exists\", () => {\r",
+									"    pm.expect(res.id).to.be.a(\"number\");\r",
+									"    pm.environment.set(\"event_schedule_id\", res.id);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Event ID matches\", () => \r",
+									"    pm.expect(res.eventId).to.eql(Number(pm.environment.get(\"event_id\")))\r",
+									");\r",
+									"\r",
+									"pm.test(\"Schedule ID matches\", () => \r",
+									"    pm.expect(res.scheduleId).to.eql(Number(pm.environment.get(\"schedule_id\")))\r",
+									");"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/event-schedules?eventId={{event_id}}&scheduleId={{schedule_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"event-schedules"
+							],
+							"query": [
+								{
+									"key": "eventId",
+									"value": "{{event_id}}"
+								},
+								{
+									"key": "scheduleId",
+									"value": "{{schedule_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_all_eventsSchedules",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+									"\r",
+									"const res = pm.response.json();\r",
+									"pm.test(\"Response is an array\", () => pm.expect(res).to.be.an(\"array\"));\r",
+									"\r",
+									"pm.test(\"Created event schedule exists\", () => {\r",
+									"    const found = res.some(e => e.id === Number(pm.environment.get(\"event_schedule_id\")));\r",
+									"    pm.expect(found).to.be.true;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/event-schedules",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"event-schedules"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_by_event",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+									"\r",
+									"const res = pm.response.json();\r",
+									"pm.test(\"All returned schedules belong to event\", () => {\r",
+									"    res.forEach(e => pm.expect(e.eventId).to.eql(Number(pm.environment.get(\"event_id\"))));\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/event-schedules/event/{{event_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"event-schedules",
+								"event",
+								"{{event_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_by_schedule",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+									"\r",
+									"const res = pm.response.json();\r",
+									"\r",
+									"pm.test(\"All returned events belong to schedule\", () => {\r",
+									"    res.forEach(e => {\r",
+									"        pm.expect(e.scheduleId).to.eql(Number(pm.environment.get(\"schedule_id\")));\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/event-schedules/schedule/{{schedule_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"event-schedules",
+								"schedule",
+								"{{schedule_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "UserEventControllerTests",
+			"item": [
+				{
+					"name": "create_userEvent",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+									"\r",
+									"const res = pm.response.json();\r",
+									"\r",
+									"pm.test(\"UserEvent ID exists\", () => {\r",
+									"    pm.expect(res.id).to.be.a(\"number\");\r",
+									"    pm.environment.set(\"user_event_id\", res.id);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"User and Event IDs match\", () => {\r",
+									"    pm.expect(res.userId).to.eql(Number(pm.environment.get(\"user_id\")));\r",
+									"    pm.expect(res.eventId).to.eql(Number(pm.environment.get(\"event_id\")));\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user-events?userId={{user_id}}&eventId={{event_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user-events"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "{{user_id}}"
+								},
+								{
+									"key": "eventId",
+									"value": "{{event_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_by_user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+									"\r",
+									"const res = pm.response.json();\r",
+									"pm.test(\"Response is an array\", () => pm.expect(res).to.be.an(\"array\"));\r",
+									"\r",
+									"pm.test(\"UserEvent exists\", () => {\r",
+									"    const found = res.some(e => e.id === Number(pm.environment.get(\"user_event_id\")));\r",
+									"    pm.expect(found).to.be.true;\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user-events/user/{{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user-events",
+								"user",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "mark_attendance",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+									"\r",
+									"const res = pm.response.json();\r",
+									"pm.test(\"Attendance marked correctly\", () => {\r",
+									"    const attended = pm.environment.get(\"attended\") === \"true\";\r",
+									"    pm.expect(res.attended).to.eql(attended);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user-events/{{user_event_id}}/attendance?attended=true",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user-events",
+								"{{user_event_id}}",
+								"attendance"
+							],
+							"query": [
+								{
+									"key": "attended",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_all_userEvents",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+									"\r",
+									"const res = pm.response.json();\r",
+									"pm.test(\"Response is an array\", () => pm.expect(res).to.be.an(\"array\"));"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user-events",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user-events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_by_event",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+									"\r",
+									"const res = pm.response.json();\r",
+									"pm.test(\"Response is an array\", () => pm.expect(res).to.be.an(\"array\"));"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user-events/event/{{event_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user-events",
+								"event",
+								"{{event_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Delete",
 			"item": [
+				{
+					"name": "delete_userEvent",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user-events/{{user_event_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user-events",
+								"{{user_event_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete_eventSchedule",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/event-schedules/{{event_schedule_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"event-schedules",
+								"{{event_schedule_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete_event",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/events/{{event_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"events",
+								"{{event_id}}"
+							]
+						}
+					},
+					"response": []
+				},
 				{
 					"name": "delete_schedule",
 					"event": [

@@ -72,7 +72,6 @@ public class NotificationServiceImpl implements INotificationService {
 
             Notification saved = notificationRepository.save(notification);
 
-            // Enviar la notificación a cada usuario conectado
             messagingTemplate.convertAndSend("/topic/notifications/" + user.getId(), saved);
         }
     }
