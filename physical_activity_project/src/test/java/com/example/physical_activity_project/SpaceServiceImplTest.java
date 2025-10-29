@@ -12,6 +12,10 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 class SpaceServiceImplTest {
@@ -140,11 +144,10 @@ class SpaceServiceImplTest {
         spaceService.deleteSpace(1L);
 
         verify(spaceRepository).delete(space);
-        verify(notificationService).sendNotification(
-                0L,
-                "El espacio 'Pista de atletismo' ha sido eliminado.",
-                "SPACE_DELETE",
-                1
+        verify(notificationService).sendNotificationToAll(
+            "El espacio 'Pista de atletismo' ha sido eliminado.",
+            "SPACE_DELETE",
+            1
         );
     }
 

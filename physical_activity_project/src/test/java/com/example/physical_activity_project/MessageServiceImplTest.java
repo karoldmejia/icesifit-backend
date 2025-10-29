@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class MessageServiceImplTest {
@@ -147,4 +148,13 @@ class MessageServiceImplTest {
         assertEquals("Access denied: no active assignment between these users", ex.getMessage());
         verify(messageRepository, never()).findByTrainerIdAndUserIdOrderBySendDateAsc(any(), any());
     }
+
+    @Test
+        void deleteMessage_ShouldCallRepositoryDeleteById() {
+        Long messageId = 10L;
+        messageService.deleteMessage(messageId);
+
+        verify(messageRepository, times(1)).deleteById(messageId);
+        }
+
 }

@@ -132,4 +132,25 @@ class NotificationServiceImplTest {
         verify(messagingTemplate).convertAndSend(eq("/topic/notifications/1"), any(Notification.class));
         verify(messagingTemplate).convertAndSend(eq("/topic/notifications/2"), any(Notification.class));
     }
+
+    @Test
+    void testDeleteNotification_Success() {
+        when(notificationRepository.findById(10L)).thenReturn(Optional.of(notification));
+
+        notificationService.deleteNotification(10L);
+
+        verify(notificationRepository, times(1)).delete(notification);
+    }
+
+    @Test
+    void testDeleteNotification_NotFound() {
+        when(notificationRepository.findById(999L)).thenReturn(Optional.empty());
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> 
+                notificationService.deleteNotification(999L)
+        );
+
+        assertEquals("Notification not found", ex.getMessage());
+        verify(notificationRepository, never()).delete(any());
+    }
 }

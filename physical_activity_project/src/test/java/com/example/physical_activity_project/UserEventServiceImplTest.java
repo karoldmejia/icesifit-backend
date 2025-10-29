@@ -16,6 +16,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.contains;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 class UserEventServiceImplTest {
@@ -150,4 +153,41 @@ class UserEventServiceImplTest {
         );
         assertEquals("Registration not found", ex.getMessage());
     }
+
+    @Test
+    void shouldReturnAllUserEvents() {
+        when(userEventRepository.findAll()).thenReturn(List.of(userEvent));
+
+        List<UserEvent> result = userEventService.getAllUserEvents();
+
+        assertEquals(1, result.size());
+        assertEquals(userEvent, result.get(0));
+        verify(userEventRepository, times(1)).findAll();
+    }
+
+    @Test
+    void shouldReturnUserEventsByEvent() {
+        when(eventRepository.findById(100L)).thenReturn(Optional.of(event));
+        when(userEventRepository.findByEventId(100L)).thenReturn(List.of(userEvent));
+
+        List<UserEvent> result = userEventService.getUserEventsByEvent(100L);
+
+        assertEquals(1, result.size());
+        assertEquals(userEvent, result.get(0));
+        verify(eventRepository, times(1)).findById(100L);
+        verify(userEventRepository, times(1)).findByEventId(100L);
+    }
+
+    @Test
+    void shouldThrowWhenEventNotFoundInGetUserEventsByEvent() {
+        when(eventRepository.findById(999L)).thenReturn(Optional.empty());
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () ->
+                userEventService.getUserEventsByEvent(999L)
+        );
+
+        assertEquals("Event not found", ex.getMessage());
+    }
+
+
 }

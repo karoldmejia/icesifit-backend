@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class EventServiceImplTest {
@@ -40,11 +41,10 @@ class EventServiceImplTest {
         assertEquals(event, result);
         verify(eventRepository).save(event);
 
-        verify(notificationService).sendNotification(
-                eq(0L),
-                contains("Yoga Session"),
-                eq("EVENT_CREATE"),
-                eq(1)
+        verify(notificationService).sendNotificationToAll(
+            "¡Nuevo evento disponible: Yoga Session!",
+            "EVENT_CREATE",
+            1
         );
     }
 
@@ -98,12 +98,12 @@ class EventServiceImplTest {
 
         assertEquals("New Event", result.getName());
         assertEquals("Conference", result.getType());
-        verify(notificationService).sendNotification(
-                eq(0L),
-                contains("actualizado"),
-                eq("EVENT_UPDATE"),
-                eq(1)
+        verify(notificationService).sendNotificationToAll(
+            "El evento 'New Event' ha sido actualizado.",
+            "EVENT_UPDATE",
+            1
         );
+
     }
 
     @Test
@@ -117,11 +117,10 @@ class EventServiceImplTest {
         eventService.deleteEvent(2L);
 
         verify(eventRepository).delete(existing);
-        verify(notificationService).sendNotification(
-                eq(0L),
-                contains("Maratón"),
-                eq("EVENT_DELETE"),
-                eq(2)
+        verify(notificationService).sendNotificationToAll(
+            "El evento 'Maratón' ha sido cancelado.",
+            "EVENT_DELETE",
+            2
         );
     }
 }
