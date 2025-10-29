@@ -1,6 +1,7 @@
 package com.example.physical_activity_project.model;
 
 import java.sql.Timestamp;
+import java.time.LocalTime;
 import java.util.List;
 
 import jakarta.persistence.*;

@@ -183,18 +183,26 @@ void saveRole_withoutPermissions_throwsException() {
 
     @Test
     void deleteById_success() {
+        Role savedRole = new Role();
+        savedRole.setId(1L);
+        savedRole.setName("Admin");
+        
+        Role userRole = new Role();
+        userRole.setId(2L);
+        userRole.setName("User");
+
         when(roleRepository.findById(1L)).thenReturn(Optional.of(savedRole));
+        when(roleRepository.findByName("User")).thenReturn(Optional.of(userRole));
+
         doNothing().when(rolePermissionRepository).deleteAllByRole(savedRole);
         doNothing().when(roleRepository).delete(savedRole);
 
         roleService.deleteById(1L);
 
-
         verify(rolePermissionRepository, times(1)).deleteAllByRole(savedRole);
-
-
         verify(roleRepository, times(1)).delete(savedRole);
     }
+
 
     @Test
     void deleteById_roleNotFound_throwsException() {
@@ -336,5 +344,63 @@ void saveRole_withoutPermissions_throwsException() {
         assertEquals("Rol no encontrado", exception.getMessage());
     }
 
+    @Mock
+    private IUserRepository userRepository;
+
+    @Test
+    void deleteById_roleWithUsers_reassignsAndDeletes() {
+        Role roleToDelete = new Role();
+        roleToDelete.setId(1L);
+        roleToDelete.setName("Manager");
+
+        User user1 = new User();
+        user1.setId(1L);
+        user1.setName("Carlos");
+
+        User user2 = new User();
+        user2.setId(2L);
+        user2.setName("Ana");
+
+        List<User> users = Arrays.asList(user1, user2);
+        roleToDelete.setUsers(users);
+
+        Role userRole = new Role();
+        userRole.setId(2L);
+        userRole.setName("User");
+
+        when(roleRepository.findById(1L)).thenReturn(Optional.of(roleToDelete));
+        when(roleRepository.findByName("User")).thenReturn(Optional.of(userRole));
+
+        doNothing().when(rolePermissionRepository).deleteAllByRole(roleToDelete);
+        doNothing().when(roleRepository).delete(roleToDelete);
+        when(userRepository.save(any(User.class))).thenReturn(null);
+
+        roleService.deleteById(1L);
+
+        verify(userRepository, times(2)).save(any(User.class));
+        verify(rolePermissionRepository, times(1)).deleteAllByRole(roleToDelete);
+        verify(roleRepository, times(1)).delete(roleToDelete);
+
+        assertEquals(userRole, user1.getRole());
+        assertEquals(userRole, user2.getRole());
+    }
+
+    @Test
+    void deleteById_userRole_throwsException() {
+        Role userRole = new Role();
+        userRole.setId(1L);
+        userRole.setName("User");
+
+        when(roleRepository.findById(1L)).thenReturn(Optional.of(userRole));
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () ->
+                roleService.deleteById(1L)
+        );
+
+        assertEquals("¡El rol user no puede ser eliminado!", ex.getMessage());
+
+        verify(rolePermissionRepository, never()).deleteAllByRole(any());
+        verify(roleRepository, never()).delete(any());
+    }
 
 }

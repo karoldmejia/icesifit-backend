@@ -1,0 +1,1697 @@
+{
+	"info": {
+		"_postman_id": "bdd1eed6-d670-474c-9a32-e77fdf30bbe3",
+		"name": "PhysicalActivityTests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "44315998",
+		"_collection_link": "https://karold-1697951.postman.co/workspace/karold's-Workspace~739811dc-6776-4df9-828c-f28d0a1bf593/collection/44315998-bdd1eed6-d670-474c-9a32-e77fdf30bbe3?action=share&source=collection_link&creator=44315998"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"item": [
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let json = pm.response.json();\r",
+									"\r",
+									"if (json.token) {\r",
+									"    pm.environment.set(\"auth_token\", json.token);\r",
+									"    console.log(\"Token saved:\", json.token);\r",
+									"} else {\r",
+									"    console.log(\"Token wasn´t found\");\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Token was created correctly\", function () {\r",
+									"    pm.expect(pm.environment.get(\"auth_token\")).to.not.be.undefined;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"laura.gomez@icesi.edu.co\",\r\n  \"password\": \"admin123\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ExerciseControllerTests",
+			"item": [
+				{
+					"name": "create_exercise",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jsonData = pm.response.json();\r",
+									"pm.environment.set(\"exercise_id\", jsonData.id);\r",
+									"\r",
+									"pm.test(\"Response has all expected fields\", function () {\r",
+									"    pm.expect(jsonData).to.have.keys([\"id\", \"name\", \"type\", \"description\", \"duration\", \"difficulty\", \"videoUrl\"]);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Flexiones de brazos\",\r\n    \"type\": \"Fuerza\",\r\n    \"description\": \"Ejercicio básico de empuje que trabaja pecho, tríceps y hombros.\",\r\n    \"duration\": 5.0,\r\n    \"difficulty\": \"Media\",\r\n    \"videoUrl\": \"https://www.youtube.com/watch?v=IODxDxX7oi4\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/exercises",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"exercises"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_all_exercises",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let data = pm.response.json();\r",
+									"pm.test(\"Response is an array\", function () {\r",
+									"    pm.expect(data).to.be.an(\"array\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/exercises",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"exercises"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_one_exercise",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let exercise = pm.response.json();\r",
+									"pm.test(\"Returned exercise matches the stored ID\", function () {\r",
+									"    pm.expect(exercise.id).to.eql(Number(pm.environment.get(\"exercise_id\")));\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/exercises/{{exercise_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"exercises",
+								"{{exercise_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update_exercise",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let updated = pm.response.json();\r",
+									"pm.test(\"Name was updated\", function () {\r",
+									"    pm.expect(updated.name).to.eql(\"Flexiones diamante\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Flexiones diamante\",\r\n    \"type\": \"Fuerza\",\r\n    \"description\": \"Versión avanzada enfocada en tríceps.\",\r\n    \"duration\": 6.0,\r\n    \"difficulty\": \"Alta\",\r\n    \"videoUrl\": \"https://www.youtube.com/watch?v=J0DnG1_S92I\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/exercises/{{exercise_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"exercises",
+								"{{exercise_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "RoutineControllerTests",
+			"item": [
+				{
+					"name": "create_routine",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"pm.environment.set(\"routine_id\", jsonData.id);\r",
+									"\r",
+									"pm.test(\"Response has expected keys\", function () {\r",
+									"    pm.expect(jsonData).to.have.keys([\"id\", \"name\", \"creationDate\", \"certified\"]);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Routine created successfully\", function () {\r",
+									"    pm.expect(jsonData.name).to.eql(\"Rutina de fuerza nivel 1\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Rutina de fuerza nivel 1\",\r\n    \"creationDate\": \"2025-10-28T09:00:00\",\r\n    \"certified\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/routines",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"routines"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_all_routines",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let routines = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Response is an array\", function () {\r",
+									"    pm.expect(routines).to.be.an(\"array\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"At least one routine exists\", function () {\r",
+									"    pm.expect(routines.length).to.be.above(0);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/routines",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"routines"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_one_routine",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let routine = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Routine has correct ID\", function () {\r",
+									"    pm.expect(routine.id).to.eql(Number(pm.environment.get(\"routine_id\")));\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Routine has expected fields\", function () {\r",
+									"    pm.expect(routine).to.have.keys([\"id\", \"name\", \"creationDate\", \"certified\"]);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/routines/{{routine_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"routines",
+								"{{routine_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update_routine",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let updated = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Name updated correctly\", function () {\r",
+									"    pm.expect(updated.name).to.eql(\"Rutina de fuerza nivel 2\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Certified field updated\", function () {\r",
+									"    pm.expect(updated.certified).to.eql(false);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Rutina de fuerza nivel 2\",\r\n    \"creationDate\": \"2025-10-28T10:00:00\",\r\n    \"certified\": false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/routines/{{routine_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"routines",
+								"{{routine_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "RoutineExerciseControllerTests",
+			"item": [
+				{
+					"name": "create_routine_exercise",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let data = pm.response.json();\r",
+									"pm.environment.set(\"routine_exercise_id\", data.id);\r",
+									"\r",
+									"pm.test(\"Response has expected fields\", function () {\r",
+									"  pm.expect(data).to.have.keys([\"id\", \"sets\", \"reps\", \"time\", \"exerciseId\", \"routineId\"]);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"RoutineExercise created successfully\", function () {\r",
+									"  pm.expect(data.sets).to.eql(4);\r",
+									"  pm.expect(data.routineId).to.eql(Number(pm.environment.get(\"routine_id\")));\r",
+									"  pm.expect(data.exerciseId).to.eql(Number(pm.environment.get(\"exercise_id\")));\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"sets\": 4,\r\n  \"reps\": 12,\r\n  \"time\": 60,\r\n  \"exerciseId\": {{exercise_id}},\r\n  \"routineId\": {{routine_id}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/routine-exercises",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"routine-exercises"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_all_routine_exercises",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let list = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Response is an array\", function () {\r",
+									"  pm.expect(list).to.be.an(\"array\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"At least one RoutineExercise exists\", function () {\r",
+									"  pm.expect(list.length).to.be.above(0);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/routine-exercises",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"routine-exercises"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_exercises_per_routine",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let data = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Response is an array\", function () {\r",
+									"  pm.expect(data).to.be.an(\"array\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Each element belongs to correct routine\", function () {\r",
+									"  if (data.length > 0) {\r",
+									"    pm.expect(data[0].routineId).to.eql(Number(pm.environment.get(\"routine_id\")));\r",
+									"  }\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/routine-exercises/routine/{{routine_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"routine-exercises",
+								"routine",
+								"{{routine_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_routines_per_exercise",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let data = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Response is an array\", function () {\r",
+									"  pm.expect(data).to.be.an(\"array\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Each element belongs to correct exercise\", function () {\r",
+									"  if (data.length > 0) {\r",
+									"    pm.expect(data[0].exerciseId).to.eql(Number(pm.environment.get(\"exercise_id\")));\r",
+									"  }\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/routine-exercises/exercise/{{exercise_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"routine-exercises",
+								"exercise",
+								"{{exercise_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update_relation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let updated = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Sets updated correctly\", function () {\r",
+									"  pm.expect(updated.sets).to.eql(3);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Reps updated correctly\", function () {\r",
+									"  pm.expect(updated.reps).to.eql(15);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"sets\": 3,\r\n  \"reps\": 15,\r\n  \"time\": 90,\r\n  \"exerciseId\": {{exercise_id}},\r\n  \"routineId\": {{routine_id}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/routine-exercises/{{routine_exercise_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"routine-exercises",
+								"{{routine_exercise_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "UserRoutineControllerTests",
+			"item": [
+				{
+					"name": "create_userroutine",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let jsonData = pm.response.json();\r",
+									"pm.environment.set(\"userRoutineId\", jsonData.id);\r",
+									"pm.test(\"Routine assigned to user successfully\", function () {\r",
+									"  pm.expect(jsonData).to.have.property(\"id\");\r",
+									"  pm.expect(jsonData.status).to.eql(true);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"assignmentDate\": \"2025-10-28T00:00:00.000Z\",\r\n  \"status\": true,\r\n  \"routineId\": 1,\r\n  \"userId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/user-routines",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user-routines"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_all_user_routines",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let list = pm.response.json();\r",
+									"pm.test(\"Response is an array\", function () {\r",
+									"  pm.expect(list).to.be.an(\"array\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user-routines",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user-routines"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_userroutine_by_id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let json = pm.response.json();\r",
+									"pm.test(\"Routine ID and User ID exist\", function () {\r",
+									"  pm.expect(json).to.have.property(\"routineId\");\r",
+									"  pm.expect(json).to.have.property(\"userId\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user-routines/{{userRoutineId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user-routines",
+								"{{userRoutineId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update_user_routine",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let updated = pm.response.json();\r",
+									"pm.test(\"Status field updated correctly\", function () {\r",
+									"  pm.expect(updated.status).to.eql(false);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"assignmentDate\": \"2025-10-28T00:00:00.000Z\",\r\n  \"status\": false,\r\n  \"routineId\": {{routine_id}},\r\n  \"userId\": {{user_id}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/user-routines/{{userRoutineId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user-routines",
+								"{{userRoutineId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_all_by_user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let data = pm.response.json();\r",
+									"pm.test(\"All routines belong to the same user\", function () {\r",
+									"  data.forEach(item => pm.expect(item.userId).to.eql(parseInt(pm.environment.get(\"user_id\"))));\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user-routines/user/{{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user-routines",
+								"user",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_all_by_routine",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"let routines = pm.response.json();\r",
+									"pm.test(\"All have same routine ID\", function () {\r",
+									"  routines.forEach(r => pm.expect(r.routineId).to.eql(parseInt(pm.environment.get(\"routine_id\"))));\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user-routines/routine/{{routine_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user-routines",
+								"routine",
+								"{{routine_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ExerciseProgressControllerTests",
+			"item": [
+				{
+					"name": "get_all_progress",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is an array\", () => {\r",
+									"    pm.expect(pm.response.json()).to.be.an(\"array\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/progress",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"progress"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_progress_by_user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Each progress belongs to the correct user\", () => {\r",
+									"    const res = pm.response.json();\r",
+									"    res.forEach(p => pm.expect(p.userId).to.eql(Number(pm.environment.get(\"user_id\"))));\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/progress/user/{{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"progress",
+								"user",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create_progress",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has a valid id\", () => {\r",
+									"    const res = pm.response.json();\r",
+									"    pm.expect(res.id).to.be.a(\"number\");\r",
+									"    pm.environment.set(\"progress_id\", res.id);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Progress is correctly assigned to user\", () => {\r",
+									"    const res = pm.response.json();\r",
+									"    pm.expect(res.userId).to.eql(Number(pm.environment.get(\"user_id\")));\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"progressDate\": \"2025-10-28T10:00:00.000Z\",\r\n    \"setsCompleted\": 4,\r\n    \"repsCompleted\": 12,\r\n    \"timeCompleted\": 600,\r\n    \"effortLevel\": 8,\r\n    \"routineExerciseId\": {{routine_exercise_id}}\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/progress/user/{{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"progress",
+								"user",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update_progress",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Progress was updated successfully\", () => {\r",
+									"    const res = pm.response.json();\r",
+									"    pm.expect(res.setsCompleted).to.eql(5);\r",
+									"    pm.expect(res.effortLevel).to.eql(9);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"progressDate\": \"2025-10-28T10:00:00.000Z\",\r\n    \"setsCompleted\": 5,\r\n    \"repsCompleted\": 15,\r\n    \"timeCompleted\": 700,\r\n    \"effortLevel\": 9,\r\n    \"routineExerciseId\": {{routine_exercise_id}},\r\n    \"userId\": {{user_id}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/progress/{{progress_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"progress",
+								"{{progress_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_weekly_progress",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is an array of progress records\", () => {\r",
+									"    pm.expect(pm.response.json()).to.be.an(\"array\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/progress/user/{{user_id}}/week?startDate={{start_date}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"progress",
+								"user",
+								"{{user_id}}",
+								"week"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "{{start_date}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_summary_progress",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has summary fields\", () => {\r",
+									"    const res = pm.response.json();\r",
+									"    pm.expect(res).to.have.property(\"totalSets\");\r",
+									"    pm.expect(res).to.have.property(\"totalReps\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/progress/user/{{user_id}}/summary?start={{start_date}}&end={{end_date}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"progress",
+								"user",
+								"{{user_id}}",
+								"summary"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "{{start_date}}"
+								},
+								{
+									"key": "end",
+									"value": "{{end_date}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "UserTrainerAssignmentControllerTests",
+			"item": [
+				{
+					"name": "create_assignment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const res = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Response has valid assignment ID\", () => {\r",
+									"    pm.expect(res.id).to.be.a(\"number\");\r",
+									"    pm.environment.set(\"assignment_id\", res.id);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response contains correct trainer and user IDs\", () => {\r",
+									"    pm.expect(res.trainerId).to.eql(Number(pm.environment.get(\"trainer_id\")));\r",
+									"    pm.expect(res.userId).to.eql(Number(pm.environment.get(\"user_id\")));\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Assignment has initial status\", () => {\r",
+									"    pm.expect(res.status).to.be.a(\"string\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/assignments/trainer/{{trainer_id}}/user/{{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"assignments",
+								"trainer",
+								"{{trainer_id}}",
+								"user",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update_assignment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const res = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Status updated correctly\", () => {\r",
+									"    pm.expect(res.status).to.eql(\"ACTIVE\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Trainer and user IDs remain the same\", () => {\r",
+									"    pm.expect(res.trainerId).to.eql(Number(pm.environment.get(\"trainer_id\")));\r",
+									"    pm.expect(res.userId).to.eql(Number(pm.environment.get(\"user_id\")));\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/assignments/{{assignment_id}}/status?newStatus=ACTIVE",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"assignments",
+								"{{assignment_id}}",
+								"status"
+							],
+							"query": [
+								{
+									"key": "newStatus",
+									"value": "ACTIVE"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_assignments_by_trainer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const res = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Response is an array\", () => {\r",
+									"    pm.expect(res).to.be.an(\"array\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"All assignments belong to the same trainer\", () => {\r",
+									"    res.forEach(a => pm.expect(a.trainerId).to.eql(Number(pm.environment.get(\"trainer_id\"))));\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/assignments/trainer/{{trainer_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"assignments",
+								"trainer",
+								"{{trainer_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_assignments_by_user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const res = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Response is an array\", () => {\r",
+									"    pm.expect(res).to.be.an(\"array\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"All assignments belong to the same user\", () => {\r",
+									"    res.forEach(a => pm.expect(a.userId).to.eql(Number(pm.environment.get(\"user_id\"))));\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/assignments/user/{{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"assignments",
+								"user",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Delete",
+			"item": [
+				{
+					"name": "delete_assignment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", () => {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Assignment deleted successfully\", () => {\r",
+									"    console.log(\"Deleted assignment_id:\", pm.environment.get(\"assignment_id\"));\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/assignments/{{assignment_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"assignments",
+								"{{assignment_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete_progress",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", () => {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Progress deleted\", () => {\r",
+									"    console.log(\"Deleted progress_id:\", pm.environment.get(\"progress_id\"));\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/progress/{{progress_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"progress",
+								"{{progress_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete_userroutine",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"UserRoutine deleted successfully\", function () {\r",
+									"  pm.expect(pm.response.text()).to.include(\"deleted successfully\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user-routines/{{userRoutineId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user-routines",
+								"{{userRoutineId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete_exercise_routine",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response confirms deletion\", function () {\r",
+									"  pm.expect(pm.response.text()).to.include(\"RoutineExercise deleted successfully\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/routine-exercises/{{routine_exercise_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"routine-exercises",
+								"{{routine_exercise_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete_routine",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response confirms deletion\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"Routine deleted successfully\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/routines/{{routine_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"routines",
+								"{{routine_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete_exercise",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response confirms deletion\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"deleted successfully\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/exercises/{{exercise_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"exercises",
+								"{{exercise_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{auth_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					"// Asignar fechas dinámicamente\r",
+					"const today = new Date();\r",
+					"const weekAgo = new Date();\r",
+					"weekAgo.setDate(today.getDate() - 7);\r",
+					"\r",
+					"pm.environment.set(\"start_date\", weekAgo.toISOString().split(\"T\")[0]);\r",
+					"pm.environment.set(\"end_date\", today.toISOString().split(\"T\")[0]);"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

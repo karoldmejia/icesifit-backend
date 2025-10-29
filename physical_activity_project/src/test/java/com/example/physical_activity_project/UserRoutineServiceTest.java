@@ -182,4 +182,27 @@ class UserRoutineServiceTest {
         assertEquals(2, result.size());
         verify(userRoutineRepository, times(1)).findAll();
     }
+
+    @Test
+    void getUserRoutineById_success() {
+        when(userRoutineRepository.findById(1L)).thenReturn(Optional.of(userRoutine));
+
+        UserRoutine result = userRoutineService.getUserRoutineById(1L);
+
+        assertNotNull(result);
+        assertEquals(1L, result.getId());
+        verify(userRoutineRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    void getUserRoutineById_notFound_throwsException() {
+        when(userRoutineRepository.findById(999L)).thenReturn(Optional.empty());
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () ->
+                userRoutineService.getUserRoutineById(999L)
+        );
+
+        assertTrue(ex.getMessage().contains("UserRoutine not found with id: 999"));
+        verify(userRoutineRepository, times(1)).findById(999L);
+    }
 }

@@ -42,7 +42,6 @@ class UserServiceTest {
         role.setName("Prueba");
         role.setDescription("Rol de prueba");
 
-        // Usuario nuevo
         user = new User();
         user.setId(null);
         user.setName("Karol");
@@ -50,7 +49,6 @@ class UserServiceTest {
         user.setPassword("12345");
         user.setRole(role);
 
-        // Usuario guardado
         savedUser = new User();
         savedUser.setId(1l);
         savedUser.setName("Karol");

@@ -1,6 +1,7 @@
 package com.example.physical_activity_project;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.sql.Timestamp;
@@ -127,4 +128,27 @@ class RoutineServiceImplTest {
         assertEquals("Rutina de fuerza", result.get(0).getName());
         verify(routineRepository).findAll();
     }
+
+        @Test
+    void getRoutineById_existing_returnsRoutine() {
+        when(routineRepository.findById(1L)).thenReturn(Optional.of(routine));
+
+        Routine result = routineService.getRoutineById(1L);
+
+        assertNotNull(result);
+        assertEquals("Rutina de fuerza", result.getName());
+        verify(routineRepository).findById(1L);
+    }
+
+    @Test
+    void getRoutineById_notFound_throwsException() {
+        when(routineRepository.findById(99L)).thenReturn(Optional.empty());
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () ->
+                routineService.getRoutineById(99L));
+
+        assertEquals("Routine not found with id: 99", ex.getMessage());
+        verify(routineRepository).findById(99L);
+    }
+
 }
