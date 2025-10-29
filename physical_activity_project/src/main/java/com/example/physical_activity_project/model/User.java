@@ -1,5 +1,6 @@
 package com.example.physical_activity_project.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,8 +37,10 @@ public class User {
     private Role role;
 
     @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<UserTrainerAssignment> trainerAssignments = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<UserTrainerAssignment> userAssignments = new ArrayList<>();
 }

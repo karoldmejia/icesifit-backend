@@ -71,32 +71,44 @@ public class ExerciseProgressServiceImpl implements IExerciseProgressService {
     @Override
     public List<ExerciseProgress> getProgressByWeek(Long userId, LocalDate startDate) {
         LocalDate endDate = startDate.plusDays(6);
-        Timestamp start = Timestamp.valueOf(LocalDateTime.of(startDate, java.time.LocalTime.MIN));
-        Timestamp end = Timestamp.valueOf(LocalDateTime.of(endDate, java.time.LocalTime.MAX));
-        return exerciseProgressRepository.findByUserAndDateRange(userId, start, end);
+        return getProgressInRange(userId, startDate, endDate);
     }
 
     @Override
     public ProgressDTO getProgressSummary(Long userId, LocalDate start, LocalDate end) {
-        Timestamp startDate = Timestamp.valueOf(LocalDateTime.of(start, java.time.LocalTime.MIN));
-        Timestamp endDate = Timestamp.valueOf(LocalDateTime.of(end, java.time.LocalTime.MAX));
-
-        List<ExerciseProgress> progresses = exerciseProgressRepository.findByUserAndDateRange(userId, startDate, endDate);
-
-        if (progresses.isEmpty()) {
-            return new ProgressDTO(0L, 0, 0, 0.0);
-        }
-
-        long totalExercises = progresses.size();
-        int totalReps = progresses.stream().mapToInt(p -> p.getRepsCompleted() != null ? p.getRepsCompleted() : 0).sum();
-        int totalTime = progresses.stream().mapToInt(p -> p.getTimeCompleted() != null ? p.getTimeCompleted() : 0).sum();
-        double avgEffort = progresses.stream().mapToInt(p -> p.getEffortLevel() != null ? p.getEffortLevel() : 0).average().orElse(0.0);
-
-        return new ProgressDTO(totalExercises, totalReps, totalTime, avgEffort);
+        return calculateProgressSummary(userId, start, end);
     }
 
     @Override
     public List<ExerciseProgress> getAllProgress() {
         return exerciseProgressRepository.findAll();
     }
+
+    private List<ExerciseProgress> getProgressInRange(Long userId, LocalDate start, LocalDate end) {
+        Timestamp startTs = Timestamp.valueOf(LocalDateTime.of(start, java.time.LocalTime.MIN));
+        Timestamp endTs = Timestamp.valueOf(LocalDateTime.of(end, java.time.LocalTime.MAX));
+        return exerciseProgressRepository.findByUserAndDateRange(userId, startTs, endTs);
+    }
+
+    private ProgressDTO calculateProgressSummary(Long userId, LocalDate start, LocalDate end) {
+        List<ExerciseProgress> progresses = getProgressInRange(userId, start, end);
+
+        long totalExercises = progresses.size();
+        int totalSets = progresses.stream()
+                .mapToInt(p -> p.getSetsCompleted() != null ? p.getSetsCompleted() : 0)
+                .sum();
+        int totalReps = progresses.stream()
+                .mapToInt(p -> p.getRepsCompleted() != null ? p.getRepsCompleted() : 0)
+                .sum();
+        int totalTime = progresses.stream()
+                .mapToInt(p -> p.getTimeCompleted() != null ? p.getTimeCompleted() : 0)
+                .sum();
+        double avgEffort = progresses.stream()
+                .mapToInt(p -> p.getEffortLevel() != null ? p.getEffortLevel() : 0)
+                .average()
+                .orElse(0.0);
+
+        return new ProgressDTO(totalExercises, totalSets, totalReps, totalTime, avgEffort);
+    }
 }
+

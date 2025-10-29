@@ -6,6 +6,7 @@ import com.example.physical_activity_project.repository.IUserRepository;
 import com.example.physical_activity_project.repository.IUserTrainerAssignmentRepository;
 import com.example.physical_activity_project.services.IUserTrainerAssignmentService;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -14,15 +15,12 @@ import java.util.List;
 @Service
 public class UserTrainerAssignmentServiceImpl implements IUserTrainerAssignmentService {
 
-    private final IUserTrainerAssignmentRepository assignmentRepository;
-    private final IUserRepository userRepository;
+    @Autowired
+    private IUserTrainerAssignmentRepository assignmentRepository;
+    @Autowired
+    private IUserRepository userRepository;
+    @Autowired
     private NotificationServiceImpl notificationService;
-
-
-    public UserTrainerAssignmentServiceImpl(IUserTrainerAssignmentRepository assignmentRepository, IUserRepository userRepository) {
-        this.assignmentRepository = assignmentRepository;
-        this.userRepository = userRepository;
-    }
 
     @Override
     public UserTrainerAssignment assignTrainerToUser(Long trainerId, Long userId) {

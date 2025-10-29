@@ -1,5 +1,6 @@
 package com.example.physical_activity_project.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -38,4 +39,5 @@ public class UserTrainerAssignment {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
 }

@@ -90,4 +90,23 @@ public class RecommendationServiceImpl implements IRecommendationService {
 
         return saved;
     }
+
+    @Override
+    public void deleteRecommendation(Long recommendationId) {
+        Recommendation recommendation = recommendationRepository.findById(recommendationId)
+                .orElseThrow(() -> new RuntimeException("Recommendation not found"));
+
+        Long trainerId = recommendation.getTrainer().getId();
+        User user = recommendation.getExerciseProgress().getUser();
+
+        recommendationRepository.deleteById(recommendationId);
+
+        notificationService.sendNotification(
+                trainerId,
+                "Tu recomendación para " + user.getName() + " ha sido eliminada.",
+                "RECOMMENDATION_DELETED",
+                Math.toIntExact(recommendationId)
+        );
+    }
+
 }

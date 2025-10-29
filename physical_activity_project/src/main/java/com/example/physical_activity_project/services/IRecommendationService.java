@@ -10,5 +10,6 @@ public interface IRecommendationService {
     List<Recommendation> getRecommendationsByTrainer(Long trainerId);
     List<Recommendation> getRecommendationsByUser(Long userId);
     Recommendation updateRecommendationStatus(Long recommendationId, String newStatus);
+    void deleteRecommendation(Long recommendationId);
 
 }

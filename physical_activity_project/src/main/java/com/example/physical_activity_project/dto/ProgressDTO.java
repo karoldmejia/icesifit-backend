@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ProgressDTO {
     private Long totalExercises;
+    private Integer totalSets;
     private Integer totalReps;
     private Integer totalTime;
     private Double averageEffort;
