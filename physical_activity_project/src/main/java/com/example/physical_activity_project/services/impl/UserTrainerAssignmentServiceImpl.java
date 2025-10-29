@@ -16,7 +16,7 @@ public class UserTrainerAssignmentServiceImpl implements IUserTrainerAssignmentS
 
     private final IUserTrainerAssignmentRepository assignmentRepository;
     private final IUserRepository userRepository;
-    private NotificationServiceImpl notificationService;
+    public NotificationServiceImpl notificationService;
 
 
     public UserTrainerAssignmentServiceImpl(IUserTrainerAssignmentRepository assignmentRepository, IUserRepository userRepository) {

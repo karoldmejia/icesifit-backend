@@ -2,6 +2,7 @@ package com.example.physical_activity_project;
 
 import com.example.physical_activity_project.model.Permission;
 import com.example.physical_activity_project.repository.IPermissionRepository;
+import com.example.physical_activity_project.repository.IRolePermissionRepository;
 import com.example.physical_activity_project.services.impl.PermissionServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.mockito.*;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class PermissionServiceTest {
@@ -18,6 +20,10 @@ class PermissionServiceTest {
 
     @Mock
     private IPermissionRepository permissionRepository;
+
+    @Mock
+    private IRolePermissionRepository rolePermissionRepository;
+
 
     private Permission permission;
     private List<Permission> permissions;
