@@ -9,4 +9,5 @@ public interface INotificationService {
     List<Notification> getNotificationsByUser(Long userId);
     Notification markAsRead(Long notificationId);
     void sendNotificationToAll(String text, String originType, Integer originId);
+    void deleteNotification(Long notificationId);
     }

@@ -116,3 +116,39 @@ VALUES (CURRENT_TIMESTAMP, 3, 15, NULL, 8, 4, 1);
 
 INSERT INTO exercise_progress (progress_date, sets_completed, reps_completed, time_completed, effort_level, user_id, routine_exercise_id)
 VALUES (CURRENT_TIMESTAMP, 1, NULL, 20, 5, 5, 3);
+
+-- ==========================================
+-- RECOMMENDATIONS
+-- ==========================================
+INSERT INTO recommendation (recommendation_date, content, status, progress_id, trainer_id)
+VALUES (CURRENT_TIMESTAMP, 'Haz 5 repeticiones extra en plancha para mejorar fuerza de core', 'NEW', 1, 2); -- Carlos -> Andrés
+
+INSERT INTO recommendation (recommendation_date, content, status, progress_id, trainer_id)
+VALUES (CURRENT_TIMESTAMP, 'Aumenta el tiempo de caminata a 25 minutos', 'NEW', 2, 3); -- María -> Camila
+
+-- ==========================================
+-- MESSAGES
+-- ==========================================
+INSERT INTO message (content, send_date, user_id, trainer_id)
+VALUES ('Hola Andrés, recuerda hidratarte antes del entrenamiento', CURRENT_TIMESTAMP, 4, 2); -- Carlos -> Andrés
+
+INSERT INTO message (content, send_date, user_id, trainer_id)
+VALUES ('Camila, no olvides hacer los estiramientos al final', CURRENT_TIMESTAMP, 5, 3); -- María -> Camila
+
+INSERT INTO message (content, send_date, user_id, trainer_id)
+VALUES ('Andrés, me gustó tu progreso de hoy!', CURRENT_TIMESTAMP, 4, 2); -- Mensaje de usuario a entrenador
+
+-- ==========================================
+-- NOTIFICATIONS
+-- ==========================================
+INSERT INTO notification (origin_type, origin_id, text, sent_date, read_flag, user_id)
+VALUES ('RECOMMENDATION', 1, 'Tu entrenador Carlos ha dejado una nueva recomendación.', CURRENT_TIMESTAMP, FALSE, 4);
+
+INSERT INTO notification (origin_type, origin_id, text, sent_date, read_flag, user_id)
+VALUES ('MESSAGE', 1, 'Tienes un nuevo mensaje de tu entrenador Carlos.', CURRENT_TIMESTAMP, FALSE, 4);
+
+INSERT INTO notification (origin_type, origin_id, text, sent_date, read_flag, user_id)
+VALUES ('RECOMMENDATION', 2, 'Tu entrenador María ha dejado una nueva recomendación.', CURRENT_TIMESTAMP, FALSE, 5);
+
+INSERT INTO notification (origin_type, origin_id, text, sent_date, read_flag, user_id)
+VALUES ('MESSAGE', 2, 'Tienes un nuevo mensaje de tu entrenador María.', CURRENT_TIMESTAMP, FALSE, 5);

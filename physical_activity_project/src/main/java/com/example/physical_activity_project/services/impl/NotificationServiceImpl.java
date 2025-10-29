@@ -77,4 +77,12 @@ public class NotificationServiceImpl implements INotificationService {
         }
     }
 
+    @Override
+    public void deleteNotification(Long notificationId) {
+        Notification notification = notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new RuntimeException("Notification not found"));
+        notificationRepository.delete(notification);
+    }
+
+
 }

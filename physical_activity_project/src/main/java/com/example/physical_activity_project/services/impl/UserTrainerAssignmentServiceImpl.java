@@ -16,11 +16,11 @@ import java.util.List;
 public class UserTrainerAssignmentServiceImpl implements IUserTrainerAssignmentService {
 
     @Autowired
-    private IUserTrainerAssignmentRepository assignmentRepository;
+    public IUserTrainerAssignmentRepository assignmentRepository;
     @Autowired
-    private IUserRepository userRepository;
+    public IUserRepository userRepository;
     @Autowired
-    private NotificationServiceImpl notificationService;
+    public NotificationServiceImpl notificationService;
 
     @Override
     public UserTrainerAssignment assignTrainerToUser(Long trainerId, Long userId) {

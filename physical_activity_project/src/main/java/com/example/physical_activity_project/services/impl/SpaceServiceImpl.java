@@ -65,8 +65,7 @@ public class SpaceServiceImpl implements ISpaceService {
         Space existing = getSpaceById(id);
         spaceRepository.delete(existing);
 
-        notificationService.sendNotification(
-                0L,
+        notificationService.sendNotificationToAll(
                 "El espacio '" + existing.getName() + "' ha sido eliminado.",
                 "SPACE_DELETE",
                 Math.toIntExact(id)

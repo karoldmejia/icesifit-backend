@@ -1,10 +1,10 @@
 {
 	"info": {
-		"_postman_id": "bdd1eed6-d670-474c-9a32-e77fdf30bbe3",
+		"_postman_id": "978234ce-65de-4a9d-b616-1c28d2a884f1",
 		"name": "PhysicalActivityTests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "44315998",
-		"_collection_link": "https://karold-1697951.postman.co/workspace/karold's-Workspace~739811dc-6776-4df9-828c-f28d0a1bf593/collection/44315998-bdd1eed6-d670-474c-9a32-e77fdf30bbe3?action=share&source=collection_link&creator=44315998"
+		"_collection_link": "https://karold-1697951.postman.co/workspace/karold's-Workspace~739811dc-6776-4df9-828c-f28d0a1bf593/collection/44315998-978234ce-65de-4a9d-b616-1c28d2a884f1?action=share&source=collection_link&creator=44315998"
 	},
 	"item": [
 		{
@@ -1425,8 +1425,799 @@
 			]
 		},
 		{
+			"name": "MessageControllerTests",
+			"item": [
+				{
+					"name": "send_message",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"let jsonData = pm.response.json();",
+									"pm.environment.set(\"message_id\", jsonData.id);",
+									"",
+									"pm.test(\"Response has all expected fields\", function () {",
+									"    pm.expect(jsonData).to.include.all.keys([\"id\", \"content\", \"sendDate\", \"trainerId\", \"userId\"]);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/messages?trainerId={{trainer_id}}&userId={{user_id}}&content=Hola",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"messages"
+							],
+							"query": [
+								{
+									"key": "trainerId",
+									"value": "{{trainer_id}}"
+								},
+								{
+									"key": "userId",
+									"value": "{{user_id}}"
+								},
+								{
+									"key": "content",
+									"value": "Hola"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_conversation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"let data = pm.response.json();",
+									"pm.test(\"Response is an array\", function () {",
+									"    pm.expect(data).to.be.an(\"array\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/messages/conversation?trainerId={{trainer_id}}&userId={{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"messages",
+								"conversation"
+							],
+							"query": [
+								{
+									"key": "trainerId",
+									"value": "{{trainer_id}}"
+								},
+								{
+									"key": "userId",
+									"value": "{{user_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "NotificationControllerTests",
+			"item": [
+				{
+					"name": "create_notification",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+									"\r",
+									"const res = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Notification ID exists\", () => {\r",
+									"    pm.expect(res.id).to.be.a(\"number\");\r",
+									"    pm.environment.set(\"notification_id\", res.id);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"User ID matches\", () => {\r",
+									"    pm.expect(res.userId).to.eql(Number(pm.environment.get(\"user_id\")));\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content and origin are correct\", () => {\r",
+									"    pm.expect(res.text).to.eql(\"You have a new recommendation\");\r",
+									"    pm.expect(res.originType).to.eql(pm.environment.get(\"origin_type\"));\r",
+									"    pm.expect(res.originId).to.eql(Number(pm.environment.get(\"origin_id\")));\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"text\": \"You have a new recommendation\",\r\n    \"originType\": \"{{origin_type}}\",\r\n    \"originId\": {{origin_id}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/notifications/user/{{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"notifications",
+								"user",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_notification_by_user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+									"\r",
+									"const res = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Response is an array\", () => pm.expect(res).to.be.an(\"array\"));\r",
+									"\r",
+									"pm.test(\"All notifications belong to user\", () => {\r",
+									"    res.forEach(n => pm.expect(n.userId).to.eql(Number(pm.environment.get(\"user_id\"))));\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/notifications/user/{{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"notifications",
+								"user",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "mark_as_read",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+									"\r",
+									"const res = pm.response.json();\r",
+									"pm.test(\"Notification marked as read\", () => pm.expect(res.readFlag).to.be.true);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/notifications/{{notification_id}}/read",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"notifications",
+								"{{notification_id}}",
+								"read"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "send_all_users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"text\": \"System maintenance today\",\r\n    \"originType\": \"{{origin_type}}\",\r\n    \"originId\": {{origin_id}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/notifications/all",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"notifications",
+								"all"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "SpaceControllerTests",
+			"item": [
+				{
+					"name": "create_space",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+									"\r",
+									"const res = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Space ID exists\", () => {\r",
+									"    pm.expect(res.id).to.be.a(\"number\");\r",
+									"    pm.environment.set(\"space_id\", res.id);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Space fields match input\", () => {\r",
+									"    pm.expect(res.name).to.eql(pm.environment.get(\"space_name\"));\r",
+									"    pm.expect(res.location).to.eql(pm.environment.get(\"space_location\"));\r",
+									"    pm.expect(res.capacity).to.eql(Number(pm.environment.get(\"space_capacity\")));\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"{{space_name}}\",\r\n    \"location\": \"{{space_location}}\",\r\n    \"capacity\": {{space_capacity}}\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/spaces",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"spaces"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_all_spaces",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+									"\r",
+									"const res = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Response is an array\", () => pm.expect(res).to.be.an(\"array\"));\r",
+									"\r",
+									"pm.test(\"Created space exists in array\", () => {\r",
+									"    const found = res.some(s => s.id === Number(pm.environment.get(\"space_id\")));\r",
+									"    pm.expect(found).to.be.true;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/spaces",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"spaces"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_one_space",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+									"\r",
+									"const res = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Space ID matches\", () => pm.expect(res.id).to.eql(Number(pm.environment.get(\"space_id\"))));\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/spaces/{{space_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"spaces",
+								"{{space_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update_space",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+									"\r",
+									"const res = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Space updated correctly\", () => {\r",
+									"    pm.expect(res.name).to.eql(pm.environment.get(\"space_name\") + \" Updated\");\r",
+									"    pm.expect(res.location).to.eql(pm.environment.get(\"space_location\") + \" Updated\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"{{space_name}} Updated\",\r\n    \"location\": \"{{space_location}} Updated\",\r\n    \"capacity\": {{space_capacity}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/spaces/{{space_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"spaces",
+								"{{space_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ScheduleControllerTests",
+			"item": [
+				{
+					"name": "create_schedule",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+									"\r",
+									"const res = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Schedule ID exists\", () => {\r",
+									"    pm.expect(res.id).to.be.a(\"number\");\r",
+									"    pm.environment.set(\"schedule_id\", res.id);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Schedule fields match input\", () => {\r",
+									"    pm.expect(res.dayOfWeek).to.eql(pm.environment.get(\"day_of_week\"));\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"dayOfWeek\": \"{{day_of_week}}\",\r\n    \"startTime\": \"{{start_time}}\",\r\n    \"endTime\": \"{{end_time}}\",\r\n    \"spaceId\": {{space_id}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/schedules/space/{{space_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"schedules",
+								"space",
+								"{{space_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_all_schedules",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+									"\r",
+									"const res = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Response is an array\", () => pm.expect(res).to.be.an(\"array\"));\r",
+									"\r",
+									"pm.test(\"Created schedule exists in array\", () => {\r",
+									"    const found = res.some(s => s.id === Number(pm.environment.get(\"schedule_id\")));\r",
+									"    pm.expect(found).to.be.true;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/schedules",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"schedules"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_schedule_by_space",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+									"\r",
+									"const res = pm.response.json();\r",
+									"pm.test(\"Response is array\", () => pm.expect(res).to.be.an(\"array\"));\r",
+									"\r",
+									"pm.test(\"Schedule for space exists\", () => {\r",
+									"    const found = res.some(s => s.id === Number(pm.environment.get(\"schedule_id\")));\r",
+									"    pm.expect(found).to.be.true;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/schedules/space/{{space_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"schedules",
+								"space",
+								"{{space_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update_schedule",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+									"\r",
+									"const res = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Schedule updated correctly\", () => {\r",
+									"    pm.expect(res.dayOfWeek).to.eql(\"Tuesday\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"dayOfWeek\": \"Tuesday\",\r\n    \"startTime\": \"2025-10-30T10:00:00\",\r\n    \"endTime\": \"2025-10-30T11:00:00\",\r\n    \"spaceId\": {{space_id}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/schedules/{{schedule_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"schedules",
+								"{{schedule_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Delete",
 			"item": [
+				{
+					"name": "delete_schedule",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/schedules/{{schedule_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"schedules",
+								"{{schedule_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete_space",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/spaces/{{space_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"spaces",
+								"{{space_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete_notification",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", () => pm.response.to.have.status(204));"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/notifications/{{notification_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"notifications",
+								"{{notification_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete_message",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response confirms deletion\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"Message deleted successfully\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/messages/{{message_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"messages",
+								"{{message_id}}"
+							]
+						}
+					},
+					"response": []
+				},
 				{
 					"name": "delete_assignment",
 					"event": [

@@ -72,4 +72,9 @@ public class MessageServiceImpl implements IMessageService {
 
         return messageRepository.findByTrainerIdAndUserIdOrderBySendDateAsc(trainerId, userId);
     }
+
+    @Override
+    public void deleteMessage(Long messageId) {
+        messageRepository.deleteById(messageId);
+    }
 }
