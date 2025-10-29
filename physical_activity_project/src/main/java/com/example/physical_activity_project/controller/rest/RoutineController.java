@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/api/routines")
@@ -23,6 +24,7 @@ public class RoutineController {
     private RoutineMapper routineMapper;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('CREAR_RUTINA') or hasAuthority('CREAR_RUTINA_CERTIFICADA')")
     public ResponseEntity<RoutineDTO> createRoutine(@RequestBody RoutineDTO routineDTO) {
         Routine routine = routineMapper.dtoToEntity(routineDTO);
         Routine saved = routineService.createRoutine(routine);
@@ -30,6 +32,7 @@ public class RoutineController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('VER_RUTINAS_PROPIAS') or hasAuthority('VER_TODAS_RUTINAS')")
     public ResponseEntity<List<RoutineDTO>> getAllRoutines() {
         List<RoutineDTO> routines = routineService.getAllRoutines()
                 .stream()
@@ -39,12 +42,15 @@ public class RoutineController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('VER_RUTINAS_PROPIAS') or hasAuthority('VER_TODAS_RUTINAS')")
+
     public ResponseEntity<RoutineDTO> getRoutineById(@PathVariable Long id) {
         Routine routine = routineService.getRoutineById(id);
         return ResponseEntity.ok(routineMapper.entityToDto(routine));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('EDITAR_RUTINA_PROPIA') or hasAuthority('EDITAR_CUALQUIER_RUTINA')")
     public ResponseEntity<RoutineDTO> updateRoutine(@PathVariable Long id, @RequestBody RoutineDTO dto) {
         Routine updated = routineMapper.dtoToEntity(dto);
         Routine saved = routineService.updateRoutine(id, updated);
@@ -52,6 +58,7 @@ public class RoutineController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ELIMINAR_RUTINA_PROPIA') or hasAuthority('ELIMINAR_CUALQUIER_RUTINA')")
     public ResponseEntity<String> deleteRoutine(@PathVariable Long id) {
         routineService.deleteRoutine(id);
         return ResponseEntity.ok("Routine deleted successfully.");

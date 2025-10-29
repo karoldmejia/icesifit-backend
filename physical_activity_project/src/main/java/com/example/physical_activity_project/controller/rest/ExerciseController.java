@@ -7,6 +7,7 @@ import com.example.physical_activity_project.services.IExerciseService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class ExerciseController {
     private ExerciseMapper mapper;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('CREAR_EJERCICIO')")
     public ResponseEntity<ExerciseDTO> createExercise(@RequestBody ExerciseDTO dto) {
         Exercise entity = mapper.dtoToEntity(dto);
         Exercise saved = exerciseService.createExercise(entity);
@@ -30,6 +32,7 @@ public class ExerciseController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('VER_EJERCICIOS')")
     public ResponseEntity<List<ExerciseDTO>> getAllExercises() {
         List<ExerciseDTO> list = exerciseService.getAllExercises()
                 .stream()
@@ -39,6 +42,7 @@ public class ExerciseController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('VER_EJERCICIOS')")
     public ResponseEntity<ExerciseDTO> getExerciseById(@PathVariable Long id) {
         Exercise exercise = exerciseService.getExerciseById(id);
         return ResponseEntity.ok(mapper.entityToDto(exercise));
@@ -46,6 +50,7 @@ public class ExerciseController {
 
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('EDITAR_EJERCICIO')")
     public ResponseEntity<ExerciseDTO> updateExercise(@PathVariable Long id, @RequestBody ExerciseDTO dto) {
         Exercise updated = mapper.dtoToEntity(dto);
         Exercise saved = exerciseService.updateExercise(id, updated);
@@ -53,6 +58,7 @@ public class ExerciseController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ELIMINAR_EJERCICIO')")
     public ResponseEntity<String> deleteExercise(@PathVariable Long id) {
         exerciseService.deleteExercise(id);
         return ResponseEntity.ok("Exercise deleted successfully.");

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/api/messages")
@@ -20,6 +21,7 @@ public class MessageController {
     private final MessageMapper mapper;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ENVIAR_MENSAJE')")
     public ResponseEntity<MessageDTO> sendMessage(
             @RequestParam Long trainerId,
             @RequestParam Long userId,
@@ -30,6 +32,7 @@ public class MessageController {
     }
 
     @GetMapping("/conversation")
+    @PreAuthorize("hasAuthority('VER_CONVERSACIONES_PROPIAS')")
     public ResponseEntity<List<MessageDTO>> getConversation(
             @RequestParam Long trainerId,
             @RequestParam Long userId
@@ -42,6 +45,7 @@ public class MessageController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ELIMINAR_MENSAJE_PROPIO')")
     public ResponseEntity<String> deleteMessage(@PathVariable Long id) {
         messageService.deleteMessage(id);
         return ResponseEntity.ok("Message deleted successfully");

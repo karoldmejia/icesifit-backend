@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/api/assignments")
@@ -19,6 +20,7 @@ public class UserTrainerAssignmentController {
     private final UserTrainerAssignmentMapper mapper;
 
     @PostMapping("/trainer/{trainerId}/user/{userId}")
+    @PreAuthorize("hasAuthority('CREAR_ASIGNACION')")
     public ResponseEntity<UserTrainerAssignmentDTO> assignTrainer(
             @PathVariable Long trainerId,
             @PathVariable Long userId) {
@@ -28,6 +30,7 @@ public class UserTrainerAssignmentController {
     }
 
     @PutMapping("/{assignmentId}/status")
+    @PreAuthorize("hasAuthority('ACTUALIZAR_ESTADO_ASIGNACION')")
     public ResponseEntity<UserTrainerAssignmentDTO> updateStatus(
             @PathVariable Long assignmentId,
             @RequestParam String newStatus) {
@@ -37,6 +40,7 @@ public class UserTrainerAssignmentController {
     }
 
     @GetMapping("/trainer/{trainerId}")
+    @PreAuthorize("hasAuthority('VER_ASIGNACIONES_PROPIAS')")
     public ResponseEntity<List<UserTrainerAssignmentDTO>> getByTrainer(@PathVariable Long trainerId) {
         List<UserTrainerAssignmentDTO> list = assignmentService.getAssignmentsByTrainer(trainerId)
                 .stream()
@@ -46,6 +50,7 @@ public class UserTrainerAssignmentController {
     }
 
     @GetMapping("/user/{userId}")
+    @PreAuthorize("hasAuthority('VER_ASIGNACIONES_PROPIAS')")
     public ResponseEntity<List<UserTrainerAssignmentDTO>> getByUser(@PathVariable Long userId) {
         List<UserTrainerAssignmentDTO> list = assignmentService.getAssignmentsByUser(userId)
                 .stream()
@@ -55,6 +60,7 @@ public class UserTrainerAssignmentController {
     }
 
     @DeleteMapping("/{assignmentId}")
+    @PreAuthorize("hasAuthority('ELIMINAR_ASIGNACION')")
     public ResponseEntity<Void> deleteAssignment(@PathVariable Long assignmentId) {
         assignmentService.deleteAssignment(assignmentId);
         return ResponseEntity.noContent().build();

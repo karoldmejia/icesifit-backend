@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/api/recommendations")
@@ -20,6 +21,7 @@ public class RecommendationController {
     private final RecommendationMapper mapper;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('CREAR_RECOMENDACION')")
     public ResponseEntity<RecommendationDTO> createRecommendation(
             @RequestParam Long trainerId,
             @RequestParam Long progressId,
@@ -30,6 +32,7 @@ public class RecommendationController {
     }
 
     @GetMapping("/trainer/{trainerId}")
+    @PreAuthorize("hasAuthority('VER_RECOMENDACIONES_CREADAS')")
     public ResponseEntity<List<RecommendationDTO>> getByTrainer(@PathVariable Long trainerId) {
         List<RecommendationDTO> recommendations = recommendationService.getRecommendationsByTrainer(trainerId)
                 .stream()
@@ -39,6 +42,7 @@ public class RecommendationController {
     }
 
     @GetMapping("/user/{userId}")
+    @PreAuthorize("hasAuthority('VER_RECOMENDACIONES_PROPIAS') or hasAuthority('VER_RECOMENDACIONES_CREADAS')")
     public ResponseEntity<List<RecommendationDTO>> getByUser(@PathVariable Long userId) {
         List<RecommendationDTO> recommendations = recommendationService.getRecommendationsByUser(userId)
                 .stream()
@@ -48,6 +52,7 @@ public class RecommendationController {
     }
 
     @PutMapping("/{recommendationId}/status")
+    @PreAuthorize("hasAuthority('ACTUALIZAR_ESTADO_RECOMENDACION')")
     public ResponseEntity<RecommendationDTO> updateStatus(
             @PathVariable Long recommendationId,
             @RequestParam String newStatus
@@ -57,6 +62,7 @@ public class RecommendationController {
     }
 
     @DeleteMapping("/{recommendationId}")
+    @PreAuthorize("hasAuthority('ELIMINAR_RECOMENDACION')")
     public ResponseEntity<Void> deleteRecommendation(@PathVariable Long recommendationId) {
         recommendationService.deleteRecommendation(recommendationId);
         return ResponseEntity.noContent().build();

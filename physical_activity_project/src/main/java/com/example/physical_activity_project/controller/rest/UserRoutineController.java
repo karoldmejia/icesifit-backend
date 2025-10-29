@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/api/user-routines")
@@ -23,6 +24,7 @@ public class UserRoutineController {
     private UserRoutineMapper mapper;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ASIGNAR_RUTINA_USUARIO')")
     public ResponseEntity<UserRoutineDTO> createUserRoutine(@RequestBody UserRoutineDTO dto) {
         UserRoutine entity = mapper.dtoToEntity(dto);
         UserRoutine saved = userRoutineService.assignRoutineToUser(entity);
@@ -30,6 +32,7 @@ public class UserRoutineController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('VER_RUTINAS_ASIGNADAS') or hasAuthority('VER_TODAS_RUTINAS')")
     public ResponseEntity<List<UserRoutineDTO>> getAll() {
         List<UserRoutineDTO> list = userRoutineService.getAllUserRoutines()
                 .stream()
@@ -39,12 +42,14 @@ public class UserRoutineController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('VER_RUTINAS_ASIGNADAS') or hasAuthority('VER_TODAS_RUTINAS')")
     public ResponseEntity<UserRoutineDTO> getById(@PathVariable Long id) {
         UserRoutine userRoutine = userRoutineService.getUserRoutineById(id);
         return ResponseEntity.ok(mapper.entityToDto(userRoutine));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ASIGNAR_RUTINA_USUARIO')")
     public ResponseEntity<UserRoutineDTO> update(@PathVariable Long id, @RequestBody UserRoutineDTO dto) {
         UserRoutine entity = mapper.dtoToEntity(dto);
         UserRoutine updated = userRoutineService.updateUserRoutine(id, entity);
@@ -52,12 +57,14 @@ public class UserRoutineController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ASIGNAR_RUTINA_USUARIO')")
     public ResponseEntity<String> delete(@PathVariable Long id) {
         userRoutineService.deleteUserRoutine(id);
         return ResponseEntity.ok("UserRoutine deleted successfully.");
     }
 
     @GetMapping("/user/{userId}")
+    @PreAuthorize("hasAuthority('VER_RUTINAS_ASIGNADAS') or hasAuthority('VER_TODAS_RUTINAS')")
     public ResponseEntity<List<UserRoutineDTO>> getByUser(@PathVariable Long userId) {
         List<UserRoutineDTO> list = userRoutineService.getUserRoutinesByUser(userId)
                 .stream()
@@ -67,6 +74,7 @@ public class UserRoutineController {
     }
 
     @GetMapping("/routine/{routineId}")
+    @PreAuthorize("hasAuthority('VER_TODAS_RUTINAS')")
     public ResponseEntity<List<UserRoutineDTO>> getByRoutine(@PathVariable Long routineId) {
         List<UserRoutineDTO> list = userRoutineService.getUserRoutinesByRoutine(routineId)
                 .stream()

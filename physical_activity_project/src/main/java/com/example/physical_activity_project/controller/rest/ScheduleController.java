@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/api/schedules")
@@ -23,6 +24,7 @@ public class ScheduleController {
     private final ScheduleMapper mapper;
 
     @PostMapping("/space/{spaceId}")
+    @PreAuthorize("hasAuthority('CREAR_HORARIO')")
     public ResponseEntity<ScheduleDTO> createSchedule(@PathVariable Long spaceId, @RequestBody ScheduleDTO dto) {
         Schedule schedule = mapper.dtoToEntity(dto);
         // Asociar la space completa antes de guardar
@@ -33,6 +35,7 @@ public class ScheduleController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('VER_HORARIOS')")
     public ResponseEntity<List<ScheduleDTO>> getAllSchedules() {
         List<ScheduleDTO> list = scheduleService.getAllSchedules().stream()
                 .map(mapper::entityToDto)
@@ -41,6 +44,7 @@ public class ScheduleController {
     }
 
     @GetMapping("/space/{spaceId}")
+    @PreAuthorize("hasAuthority('VER_HORARIOS')")
     public ResponseEntity<List<ScheduleDTO>> getSchedulesBySpace(@PathVariable Long spaceId) {
         List<ScheduleDTO> list = scheduleService.getSchedulesBySpace(spaceId).stream()
                 .map(mapper::entityToDto)
@@ -49,6 +53,7 @@ public class ScheduleController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('EDITAR_HORARIO')")
     public ResponseEntity<ScheduleDTO> updateSchedule(@PathVariable Long id, @RequestBody ScheduleDTO dto) {
         Schedule updated = mapper.dtoToEntity(dto);
         Schedule saved = scheduleService.updateSchedule(id, updated);
@@ -56,6 +61,7 @@ public class ScheduleController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ELIMINAR_HORARIO')")
     public ResponseEntity<Void> deleteSchedule(@PathVariable Long id) {
         scheduleService.deleteSchedule(id);
         return ResponseEntity.ok().build();

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/api/user-events")
@@ -20,6 +21,7 @@ public class UserEventController {
     private final UserEventMapper mapper;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('INSCRIBIRSE_EVENTO')")
     public ResponseEntity<UserEventDTO> register(
             @RequestParam Long userId,
             @RequestParam Long eventId
@@ -29,6 +31,7 @@ public class UserEventController {
     }
 
     @GetMapping("/user/{userId}")
+    @PreAuthorize("hasAuthority('VER_EVENTOS')")
     public ResponseEntity<List<UserEventDTO>> getUserEvents(@PathVariable Long userId) {
         List<UserEventDTO> list = service.getUserEvents(userId).stream()
                 .map(mapper::entityToDto)
@@ -37,6 +40,7 @@ public class UserEventController {
     }
 
     @PutMapping("/{userEventId}/attendance")
+    @PreAuthorize("hasAuthority('MARCAR_ASISTENCIA')")
     public ResponseEntity<UserEventDTO> markAttendance(
             @PathVariable Long userEventId,
             @RequestParam Boolean attended
@@ -46,12 +50,14 @@ public class UserEventController {
     }
 
     @DeleteMapping("/{userEventId}")
+    @PreAuthorize("hasAuthority('CANCELAR_INSCRIPCION_PROPIA')")
     public ResponseEntity<Void> cancelRegistration(@PathVariable Long userEventId) {
         service.cancelRegistration(userEventId);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('VER_INSCRIPCIONES_EVENTO')")
     public ResponseEntity<List<UserEventDTO>> getAllUserEvents() {
         List<UserEventDTO> list = service.getAllUserEvents().stream()
                 .map(mapper::entityToDto)
@@ -60,6 +66,7 @@ public class UserEventController {
     }
 
     @GetMapping("/event/{eventId}")
+    @PreAuthorize("hasAuthority('VER_INSCRIPCIONES_EVENTO')")
     public ResponseEntity<List<UserEventDTO>> getUserEventsByEvent(@PathVariable Long eventId) {
         List<UserEventDTO> list = service.getUserEventsByEvent(eventId).stream()
                 .map(mapper::entityToDto)

@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -22,6 +23,7 @@ public class ExerciseProgressController {
     private final ExerciseProgressMapper mapper;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('VER_TODO_PROGRESO')")
     public ResponseEntity<List<ExerciseProgressDTO>> getAll() {
         List<ExerciseProgressDTO> list = progressService.getAllProgress()
                 .stream()
@@ -31,6 +33,7 @@ public class ExerciseProgressController {
     }
 
     @GetMapping("/user/{userId}")
+    @PreAuthorize("hasAuthority('VER_PROGRESO_PROPIO') or hasAuthority('VER_PROGRESO_USUARIOS_ASIGNADOS') or hasAuthority('VER_TODO_PROGRESO')")
     public ResponseEntity<List<ExerciseProgressDTO>> getByUser(@PathVariable Long userId) {
         List<ExerciseProgressDTO> list = progressService.getProgressByUser(userId)
                 .stream()
@@ -40,6 +43,7 @@ public class ExerciseProgressController {
     }
 
     @PostMapping("/user/{userId}")
+    @PreAuthorize("hasAuthority('REGISTRAR_PROGRESO_PROPIO')")
     public ResponseEntity<ExerciseProgressDTO> registerProgress(
             @PathVariable Long userId,
             @RequestBody ExerciseProgressDTO dto) {
@@ -49,6 +53,7 @@ public class ExerciseProgressController {
     }
 
     @PutMapping("/{progressId}")
+    @PreAuthorize("hasAuthority('EDITAR_PROGRESO_PROPIO')")
     public ResponseEntity<ExerciseProgressDTO> updateProgress(
             @PathVariable Long progressId,
             @RequestBody ExerciseProgressDTO dto) {
@@ -58,12 +63,14 @@ public class ExerciseProgressController {
     }
 
     @DeleteMapping("/{progressId}")
+    @PreAuthorize("hasAuthority('ELIMINAR_PROGRESO_PROPIO')")
     public ResponseEntity<Void> deleteProgress(@PathVariable Long progressId) {
         progressService.deleteProgress(progressId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/user/{userId}/week")
+    @PreAuthorize("hasAuthority('VER_PROGRESO_PROPIO') or hasAuthority('VER_PROGRESO_USUARIOS_ASIGNADOS') or hasAuthority('VER_TODO_PROGRESO')")
     public ResponseEntity<List<ExerciseProgressDTO>> getWeeklyProgress(
             @PathVariable Long userId,
             @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate) {
@@ -75,6 +82,7 @@ public class ExerciseProgressController {
     }
 
     @GetMapping("/user/{userId}/summary")
+    @PreAuthorize("hasAuthority('VER_PROGRESO_PROPIO') or hasAuthority('VER_PROGRESO_USUARIOS_ASIGNADOS') or hasAuthority('VER_TODO_PROGRESO')")
     public ResponseEntity<ProgressDTO> getSummary(
             @PathVariable Long userId,
             @RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,

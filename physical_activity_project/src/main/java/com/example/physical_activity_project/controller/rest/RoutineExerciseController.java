@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/api/routine-exercises")
@@ -23,6 +24,7 @@ public class RoutineExerciseController {
     private RoutineExerciseMapper mapper;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ASIGNAR_EJERCICIO_RUTINA')")
     public ResponseEntity<RoutineExerciseDTO> create(@RequestBody RoutineExerciseDTO dto) {
         RoutineExercise entity = mapper.dtoToEntity(dto);
         RoutineExercise saved = routineExerciseService.createRoutineExercise(entity);
@@ -30,6 +32,7 @@ public class RoutineExerciseController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('VER_RUTINAS_PROPIAS') or hasAuthority('VER_TODAS_RUTINAS')")
     public ResponseEntity<List<RoutineExerciseDTO>> getAll() {
         List<RoutineExerciseDTO> list = routineExerciseService.getAllRoutineExercises()
                 .stream()
@@ -39,6 +42,7 @@ public class RoutineExerciseController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ASIGNAR_EJERCICIO_RUTINA')")
     public ResponseEntity<RoutineExerciseDTO> update(@PathVariable Long id, @RequestBody RoutineExerciseDTO dto) {
         RoutineExercise entity = mapper.dtoToEntity(dto);
         RoutineExercise updated = routineExerciseService.updateRoutineExercise(id, entity);
@@ -46,12 +50,14 @@ public class RoutineExerciseController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ELIMINAR_EJERCICIO_RUTINA')")
     public ResponseEntity<String> delete(@PathVariable Long id) {
         routineExerciseService.deleteRoutineExercise(id);
         return ResponseEntity.ok("RoutineExercise deleted successfully.");
     }
 
     @GetMapping("/routine/{routineId}")
+    @PreAuthorize("hasAuthority('VER_RUTINAS_PROPIAS') or hasAuthority('VER_TODAS_RUTINAS')")
     public ResponseEntity<List<RoutineExerciseDTO>> getByRoutine(@PathVariable Long routineId) {
         List<RoutineExerciseDTO> list = routineExerciseService.getRoutineExercisesByRoutine(routineId)
                 .stream()
@@ -61,6 +67,7 @@ public class RoutineExerciseController {
     }
 
     @GetMapping("/exercise/{exerciseId}")
+    @PreAuthorize("hasAuthority('VER_EJERCICIOS')")
     public ResponseEntity<List<RoutineExerciseDTO>> getByExercise(@PathVariable Long exerciseId) {
         List<RoutineExerciseDTO> list = routineExerciseService.getRoutineExercisesByExercise(exerciseId)
                 .stream()

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/api/spaces")
@@ -20,6 +21,7 @@ public class SpaceController {
     private final SpaceMapper mapper;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('CREAR_ESPACIO')")
     public ResponseEntity<SpaceDTO> createSpace(@RequestBody SpaceDTO dto) {
         Space space = mapper.dtoToEntity(dto);
         Space saved = spaceService.createSpace(space);
@@ -27,6 +29,7 @@ public class SpaceController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('VER_ESPACIOS')")
     public ResponseEntity<List<SpaceDTO>> getAllSpaces() {
         List<SpaceDTO> spaces = spaceService.getAllSpaces()
                 .stream()
@@ -36,12 +39,14 @@ public class SpaceController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('VER_ESPACIOS')")
     public ResponseEntity<SpaceDTO> getSpaceById(@PathVariable Long id) {
         Space space = spaceService.getSpaceById(id);
         return ResponseEntity.ok(mapper.entityToDto(space));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('EDITAR_ESPACIO')")
     public ResponseEntity<SpaceDTO> updateSpace(@PathVariable Long id, @RequestBody SpaceDTO dto) {
         Space updated = mapper.dtoToEntity(dto);
         Space saved = spaceService.updateSpace(id, updated);
@@ -49,6 +54,7 @@ public class SpaceController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ELIMINAR_ESPACIO')")
     public ResponseEntity<Void> deleteSpace(@PathVariable Long id) {
         spaceService.deleteSpace(id);
         return ResponseEntity.ok().build();

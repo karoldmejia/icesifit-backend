@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/api/notifications")
@@ -21,6 +22,7 @@ public class NotificationController {
     private final NotificationMapper notificationMapper;
 
     @PostMapping("/user/{userId}")
+    @PreAuthorize("hasAuthority('ENVIAR_NOTIFICACION_USUARIO')")
     public ResponseEntity<NotificationDTO> sendNotification(
             @PathVariable Long userId,
             @RequestBody NotificationRequest request) {
@@ -36,6 +38,7 @@ public class NotificationController {
     }
 
     @GetMapping("/user/{userId}")
+    @PreAuthorize("hasAuthority('VER_NOTIFICACIONES_PROPIAS')")
     public ResponseEntity<List<NotificationDTO>> getNotificationsByUser(@PathVariable Long userId) {
         List<Notification> notifications = notificationService.getNotificationsByUser(userId);
         List<NotificationDTO> notificationDTOs = notifications.stream()
@@ -45,12 +48,14 @@ public class NotificationController {
     }
 
     @PutMapping("/{notificationId}/read")
+    @PreAuthorize("hasAuthority('MARCAR_NOTIFICACION_LEIDA')")
     public ResponseEntity<NotificationDTO> markAsRead(@PathVariable Long notificationId) {
         Notification notification = notificationService.markAsRead(notificationId);
         return ResponseEntity.ok(notificationMapper.entityToDto(notification));
     }
 
     @PostMapping("/all")
+    @PreAuthorize("hasAuthority('ENVIAR_NOTIFICACION_MASIVA')")
     public ResponseEntity<Void> sendNotificationToAll(
             @RequestBody NotificationRequest request) {
 
@@ -63,6 +68,7 @@ public class NotificationController {
     }
 
     @DeleteMapping("/{notificationId}")
+    @PreAuthorize("hasAuthority('ELIMINAR_NOTIFICACION_PROPIA')")
     public ResponseEntity<Void> deleteNotification(@PathVariable Long notificationId) {
         notificationService.deleteNotification(notificationId);
         return ResponseEntity.noContent().build();
