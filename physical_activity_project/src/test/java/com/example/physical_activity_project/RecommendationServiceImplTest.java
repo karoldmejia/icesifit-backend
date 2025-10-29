@@ -17,6 +17,12 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.contains;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 class RecommendationServiceImplTest {
@@ -152,5 +158,32 @@ class RecommendationServiceImplTest {
 
         assertEquals("Recommendation not found", ex.getMessage());
         verify(recommendationRepository, never()).save(any());
+    }
+
+    @Test
+    void testDeleteRecommendation_Success() {
+        when(recommendationRepository.findById(200L)).thenReturn(Optional.of(recommendation));
+
+        service.deleteRecommendation(200L);
+        verify(recommendationRepository).findById(200L);
+        verify(recommendationRepository).deleteById(200L);
+        verify(notificationService).sendNotification(
+                eq(1L),
+                eq("Tu recomendación para Estudiante ha sido eliminada."),
+                eq("RECOMMENDATION_DELETED"),
+                eq(200)
+        );
+    }
+
+    @Test
+    void testDeleteRecommendation_NotFound_Throws() {
+        when(recommendationRepository.findById(999L)).thenReturn(Optional.empty());
+
+        RuntimeException ex = assertThrows(RuntimeException.class,
+                () -> service.deleteRecommendation(999L));
+
+        assertEquals("Recommendation not found", ex.getMessage());
+        verify(recommendationRepository, never()).deleteById(any());
+        verify(notificationService, never()).sendNotification(anyLong(), anyString(), anyString(), anyInt());
     }
 }
