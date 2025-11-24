@@ -3,6 +3,8 @@ package com.example.physical_activity_project.services.impl;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.physical_activity_project.model.RoutineExercise;
+import com.example.physical_activity_project.repository.IRoutineExerciseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +17,33 @@ public class UserRoutineServiceImpl implements IUserRoutineService {
 
     @Autowired
     private IUserRoutineRepository userRoutineRepository;
+    @Autowired
+    private IRoutineExerciseRepository routineExerciseRepository;
+    @Autowired
+    private RoutineExerciseServiceImpl routineExerciseService;
 
     @Override
     public UserRoutine assignRoutineToUser(UserRoutine userRoutine) {
-        return userRoutineRepository.save(userRoutine);
-    }
+        // 1. Guardamos la UserRoutine
+        UserRoutine savedUserRoutine = userRoutineRepository.save(userRoutine);
 
+        // 2. Traemos los ejercicios de la rutina base
+        List<RoutineExercise> baseExercises = routineExerciseRepository.findByRoutine_Id(userRoutine.getRoutine().getId());
+
+        // 3. Creamos copias de los ejercicios para la UserRoutine
+        for (RoutineExercise baseExercise : baseExercises) {
+            RoutineExercise copy = new RoutineExercise();
+            copy.setExercise(baseExercise.getExercise());
+            copy.setSets(baseExercise.getSets());
+            copy.setReps(baseExercise.getReps());
+            copy.setTime(baseExercise.getTime());
+            copy.setUserRoutine(savedUserRoutine); // asigna al usuario
+            copy.setRoutine(null); // ya no es base
+            routineExerciseRepository.save(copy);
+        }
+
+        return savedUserRoutine;
+    }
     @Override
     public UserRoutine updateUserRoutine(Long id, UserRoutine updatedUserRoutine) {
         Optional<UserRoutine> optional = userRoutineRepository.findById(id);

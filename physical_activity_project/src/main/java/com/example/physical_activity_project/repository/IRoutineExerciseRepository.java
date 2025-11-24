@@ -9,4 +9,6 @@ public interface IRoutineExerciseRepository extends JpaRepository<RoutineExercis
     List<RoutineExercise> findByRoutine_Id(Long routineId);
 
     List<RoutineExercise> findByExercise_Id(Long exerciseId);
+    List<RoutineExercise> findByUserRoutine_Id(Long userRoutineId);
+
 }

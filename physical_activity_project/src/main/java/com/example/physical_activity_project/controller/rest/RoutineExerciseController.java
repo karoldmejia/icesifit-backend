@@ -26,10 +26,17 @@ public class RoutineExerciseController {
     @PostMapping
     @PreAuthorize("hasAuthority('ASIGNAR_EJERCICIO_RUTINA')")
     public ResponseEntity<RoutineExerciseDTO> create(@RequestBody RoutineExerciseDTO dto) {
-        RoutineExercise entity = mapper.dtoToEntity(dto);
-        RoutineExercise saved = routineExerciseService.createRoutineExercise(entity);
+        RoutineExercise saved = routineExerciseService.createRoutineExercise(dto);
         return ResponseEntity.ok(mapper.entityToDto(saved));
     }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ASIGNAR_EJERCICIO_RUTINA')")
+    public ResponseEntity<RoutineExerciseDTO> update(@PathVariable Long id, @RequestBody RoutineExerciseDTO dto) {
+        RoutineExercise updated = routineExerciseService.updateRoutineExercise(id, dto);
+        return ResponseEntity.ok(mapper.entityToDto(updated));
+    }
+
 
     @GetMapping
     @PreAuthorize("hasAuthority('VER_RUTINAS_PROPIAS') or hasAuthority('VER_TODAS_RUTINAS')")
@@ -41,12 +48,14 @@ public class RoutineExerciseController {
         return ResponseEntity.ok(list);
     }
 
-    @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('ASIGNAR_EJERCICIO_RUTINA')")
-    public ResponseEntity<RoutineExerciseDTO> update(@PathVariable Long id, @RequestBody RoutineExerciseDTO dto) {
-        RoutineExercise entity = mapper.dtoToEntity(dto);
-        RoutineExercise updated = routineExerciseService.updateRoutineExercise(id, entity);
-        return ResponseEntity.ok(mapper.entityToDto(updated));
+    @GetMapping("/user-routine/{userRoutineId}")
+    @PreAuthorize("hasAuthority('VER_RUTINAS_PROPIAS') or hasAuthority('VER_TODAS_RUTINAS')")
+    public ResponseEntity<List<RoutineExerciseDTO>> getByUserRoutine(@PathVariable Long userRoutineId) {
+        List<RoutineExerciseDTO> list = routineExerciseService.getRoutineExercisesByUserRoutine(userRoutineId)
+                .stream()
+                .map(mapper::entityToDto)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(list);
     }
 
     @DeleteMapping("/{id}")

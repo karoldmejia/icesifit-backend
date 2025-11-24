@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "routine_exercise")
 public class RoutineExercise {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -41,8 +41,12 @@ public class RoutineExercise {
     private Exercise exercise;
 
     @ManyToOne
-    @JoinColumn(name = "routine_id", nullable = false)
+    @JoinColumn(name = "routine_id")
     private Routine routine;
+
+    @ManyToOne
+    @JoinColumn(name = "user_routine_id")
+    private UserRoutine userRoutine;
 
     @OneToMany(mappedBy = "routineExercise", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore

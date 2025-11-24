@@ -10,4 +10,6 @@ public class RoutineExerciseDTO {
     private Integer time;
     private Long exerciseId;
     private Long routineId;
+    private Long userRoutineId;
 }
+

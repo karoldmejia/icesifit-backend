@@ -213,6 +213,7 @@ VALUES ('Juan Martínez', 'juan.martinez@icesi.edu.co', '$2a$10$cq0QO4gQ8wL0hIWT
 -- ==========================================
 -- ROUTINES
 -- ==========================================
+-- Crear rutinas base
 INSERT INTO routine (name, creation_date, certified)
 VALUES ('Rutina de Fuerza Básica', CURRENT_TIMESTAMP, true);
 
@@ -223,17 +224,44 @@ VALUES ('Rutina de Cardio Ligero', CURRENT_TIMESTAMP, false);
 -- EXERCISES
 -- ==========================================
 INSERT INTO exercise (name, type, description, duration, difficulty, video_url)
-VALUES ('Sentadillas', 'Fuerza', 'Ejercicio para piernas y glúteos', 10.0, 'Media', 'https://videos.ejemplo.com/sentadillas.mp4');
+VALUES ('Sentadillas', 'Fuerza', 'Ejercicio para piernas y glúteos', 10.0, 'Media', 'https://media1.tenor.com/m/pdMmsiutWkcAAAAC/gym.gif');
 
 INSERT INTO exercise (name, type, description, duration, difficulty, video_url)
-VALUES ('Plancha', 'Resistencia', 'Fortalece el core y los brazos', 5.0, 'Alta', 'https://videos.ejemplo.com/plancha.mp4');
+VALUES ('Plancha', 'Resistencia', 'Fortalece el core y los brazos', 5.0, 'Alta', 'https://www.inspireusafoundation.org/file/2022/01/plank-movement.gif');
 
 INSERT INTO exercise (name, type, description, duration, difficulty, video_url)
-VALUES ('Caminata rápida', 'Cardio', 'Ejercicio aeróbico suave', 20.0, 'Baja', 'https://videos.ejemplo.com/caminata.mp4');
+VALUES ('Farmers walk', 'Cardio', 'Ejercicio aeróbico suave', 20.0, 'Baja', 'https://www.inspireusafoundation.org/file/2022/04/benefits-of-farmers-walks.gif');
+
+INSERT INTO exercise (name, type, description, duration, difficulty, video_url)
+VALUES ('Burpees', 'Cardio', 'Ejercicio completo que combina fuerza y cardio', 8.0, 'Alta', 'https://www.inspireusafoundation.org/file/2022/01/burpee-movement.gif');
+
+INSERT INTO exercise (name, type, description, duration, difficulty, video_url)
+VALUES ('Flexiones', 'Fuerza', 'Fortalece pecho, hombros y tríceps', 7.0, 'Media', 'https://www.inspireusafoundation.org/file/2023/04/forearm-push-ups.gif');
+
+INSERT INTO exercise (name, type, description, duration, difficulty, video_url)
+VALUES ('Mountain climbers', 'Cardio', 'Aumenta la resistencia y activa core', 5.0, 'Alta', 'https://homeworkouts.org/wp-content/uploads/anim-mountain-climbers.gif');
+
+INSERT INTO exercise (name, type, description, duration, difficulty, video_url)
+VALUES ('Elevaciones de cadera', 'Fuerza', 'Fortalece glúteos y zona lumbar', 8.0, 'Media', 'https://sportpower.ir/wp-content/uploads/2023/06/6-min.gif');
+
+INSERT INTO exercise (name, type, description, duration, difficulty, video_url)
+VALUES ('Jumping jacks', 'Cardio', 'Ejercicio aeróbico que activa todo el cuerpo', 5.0, 'Baja', 'https://www.inspireusafoundation.org/file/2021/08/jumping-jacks.gif');
+
+-- ==========================================
+-- USER_ROUTINES
+-- ==========================================
+-- Crear user routines (copias de rutinas para usuarios específicos)
+INSERT INTO user_routine (assignment_date, status, routine_id, user_id)
+VALUES (CURRENT_TIMESTAMP, true, 1, 4);  -- usuario 4 copia de rutina 1
+INSERT INTO user_routine (assignment_date, status, routine_id, user_id)
+VALUES (CURRENT_TIMESTAMP, true, 1, 5);  -- usuario 5 copia de rutina 1
+INSERT INTO user_routine (assignment_date, status, routine_id, user_id)
+VALUES (CURRENT_TIMESTAMP, false, 2, 5); -- usuario 5 copia de rutina 2
 
 -- ==========================================
 -- ROUTINE_EXERCISES
 -- ==========================================
+-- Ejercicios de rutina base (solo para rutina general)
 INSERT INTO routine_exercise (sets, reps, time, exercise_id, routine_id)
 VALUES (3, 15, NULL, 1, 1);
 
@@ -243,6 +271,15 @@ VALUES (3, NULL, 30, 2, 1);
 INSERT INTO routine_exercise (sets, reps, time, exercise_id, routine_id)
 VALUES (1, NULL, 20, 3, 2);
 
+-- Ejercicios de usuario (para testear copia independiente)
+INSERT INTO routine_exercise (sets, reps, time, exercise_id, user_routine_id)
+VALUES (3, 15, NULL, 1, 1); -- asociado a userRoutine id 1
+INSERT INTO routine_exercise (sets, reps, time, exercise_id, user_routine_id)
+VALUES (3, NULL, 10, 4, 1); -- asociado a userRoutine id 1
+
+INSERT INTO routine_exercise (sets, reps, time, exercise_id, user_routine_id)
+VALUES (3, NULL, 30, 2, 2); -- asociado a userRoutine id 2
+
 -- ==========================================
 -- USER_TRAINER_ASSIGNMENTS
 -- ==========================================
@@ -251,15 +288,6 @@ VALUES (CURRENT_TIMESTAMP, 'ACTIVE', 2, 4); -- Carlos -> Andrés
 
 INSERT INTO user_trainer_assignment (assignment_date, status, trainer_id, user_id)
 VALUES (CURRENT_TIMESTAMP, 'PENDING', 3, 5); -- María -> Camila
-
--- ==========================================
--- USER_ROUTINES
--- ==========================================
-INSERT INTO user_routine (assignment_date, status, routine_id, user_id)
-VALUES (CURRENT_TIMESTAMP, true, 1, 4);
-
-INSERT INTO user_routine (assignment_date, status, routine_id, user_id)
-VALUES (CURRENT_TIMESTAMP, false, 2, 5);
 
 -- ==========================================
 -- EXERCISE_PROGRESS

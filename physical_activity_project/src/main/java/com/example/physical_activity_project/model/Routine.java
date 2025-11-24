@@ -26,9 +26,9 @@ public class Routine {
     @Column(name = "certified", nullable = false)
     private Boolean certified;
 
-    @OneToMany(mappedBy = "routine", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "routine", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<RoutineExercise> routineExercises;
+    private List<RoutineExercise> routineExercises; // solo ejercicios base
 
     @OneToMany(mappedBy = "routine", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
