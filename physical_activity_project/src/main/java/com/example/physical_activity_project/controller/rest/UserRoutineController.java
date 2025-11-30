@@ -24,7 +24,7 @@ public class UserRoutineController {
     private UserRoutineMapper mapper;
 
     @PostMapping
-    @PreAuthorize("hasAuthority('ASIGNAR_RUTINA_USUARIO')")
+    @PreAuthorize("hasAuthority('ASIGNAR_RUTINA_USUARIO') or hasAuthority('CREAR_RUTINA')")
     public ResponseEntity<UserRoutineDTO> createUserRoutine(@RequestBody UserRoutineDTO dto) {
         UserRoutine entity = mapper.dtoToEntity(dto);
         UserRoutine saved = userRoutineService.assignRoutineToUser(entity);

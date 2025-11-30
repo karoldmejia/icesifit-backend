@@ -1,11 +1,17 @@
 package com.example.physical_activity_project.services.impl;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.Comparator;
 
+import com.example.physical_activity_project.dto.UserCountByDateDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -80,6 +86,12 @@ public class ExerciseProgressServiceImpl implements IExerciseProgressService {
     }
 
     @Override
+    public List<ExerciseProgress> getProgressByRoutineExercise(Long routineExerciseId) {
+        return exerciseProgressRepository.findByRoutineExercise_IdOrderByProgressDateDesc(routineExerciseId);
+    }
+
+
+    @Override
     public List<ExerciseProgress> getAllProgress() {
         return exerciseProgressRepository.findAll();
     }
@@ -110,5 +122,48 @@ public class ExerciseProgressServiceImpl implements IExerciseProgressService {
 
         return new ProgressDTO(totalExercises, totalSets, totalReps, totalTime, avgEffort);
     }
+
+    @Override
+    public List<ExerciseProgress> getProgressByRoutineAndWeek(Long routineId, LocalDate startDate) {
+        LocalDate endDate = startDate.plusDays(6);
+        Timestamp startTs = Timestamp.valueOf(startDate.atStartOfDay());
+        Timestamp endTs = Timestamp.valueOf(endDate.atTime(23, 59, 59));
+        return exerciseProgressRepository.findByRoutineExercise_UserRoutine_IdAndProgressDateBetween(routineId, startTs, endTs);
+    }
+
+    @Override
+    public List<UserCountByDateDTO> getUsersCountByRoutineByDate(Long routineId) {
+
+        // Traemos todos los ExerciseProgress de la rutina
+        List<ExerciseProgress> progresses = exerciseProgressRepository.findByRoutineOrUserRoutineRoutineId(routineId);
+        progresses.forEach(ep -> System.out.println(
+                "ProgressId: " + ep.getId() +
+                        ", UserId: " + ep.getUser().getId() +
+                        ", ProgressDate: " + ep.getProgressDate()
+        ));
+
+        // Agrupamos por fecha (solo la parte de fecha, ignorando hora)
+        Map<LocalDate, Set<Long>> usersPerDay = progresses.stream()
+                .collect(Collectors.groupingBy(
+                        ep -> ep.getProgressDate().toLocalDateTime().toLocalDate(), // convierte Timestamp -> LocalDate
+                        Collectors.mapping(ep -> ep.getUser().getId(), Collectors.toSet()) // obtenemos IDs únicos de usuario
+                ));
+
+        usersPerDay.forEach((date, users) -> System.out.println("Fecha: " + date + ", UserIds: " + users));
+
+        // Convertimos el Map en lista de DTOs
+        List<UserCountByDateDTO> result = usersPerDay.entrySet().stream()
+                .map(entry -> new UserCountByDateDTO(
+                        Date.valueOf(entry.getKey()), // java.sql.Date
+                        (long) entry.getValue().size() // cantidad de usuarios distintos
+                ))
+                .sorted(Comparator.comparing(UserCountByDateDTO::getDate)) // opcional: ordenar por fecha
+                .toList();
+
+        result.forEach(dto -> System.out.println("Date: " + dto.getDate() + ", UserCount: " + dto.getUserCount()));
+
+        return result;
+    }
+
 }
 

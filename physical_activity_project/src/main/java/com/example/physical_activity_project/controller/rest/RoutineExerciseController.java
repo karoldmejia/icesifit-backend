@@ -24,14 +24,14 @@ public class RoutineExerciseController {
     private RoutineExerciseMapper mapper;
 
     @PostMapping
-    @PreAuthorize("hasAuthority('ASIGNAR_EJERCICIO_RUTINA')")
+    @PreAuthorize("hasAuthority('ASIGNAR_RUTINA_USUARIO') or hasAuthority('CREAR_RUTINA')")
     public ResponseEntity<RoutineExerciseDTO> create(@RequestBody RoutineExerciseDTO dto) {
         RoutineExercise saved = routineExerciseService.createRoutineExercise(dto);
         return ResponseEntity.ok(mapper.entityToDto(saved));
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('ASIGNAR_EJERCICIO_RUTINA')")
+    @PreAuthorize("hasAuthority('ASIGNAR_EJERCICIO_RUTINA') or hasAuthority('EDITAR_RUTINA_PROPIA')")
     public ResponseEntity<RoutineExerciseDTO> update(@PathVariable Long id, @RequestBody RoutineExerciseDTO dto) {
         RoutineExercise updated = routineExerciseService.updateRoutineExercise(id, dto);
         return ResponseEntity.ok(mapper.entityToDto(updated));
@@ -59,7 +59,7 @@ public class RoutineExerciseController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ELIMINAR_EJERCICIO_RUTINA')")
+    @PreAuthorize("hasAuthority('ELIMINAR_EJERCICIO_RUTINA') or hasAuthority('ELIMINAR_RUTINA_PROPIA')")
     public ResponseEntity<String> delete(@PathVariable Long id) {
         routineExerciseService.deleteRoutineExercise(id);
         return ResponseEntity.ok("RoutineExercise deleted successfully.");

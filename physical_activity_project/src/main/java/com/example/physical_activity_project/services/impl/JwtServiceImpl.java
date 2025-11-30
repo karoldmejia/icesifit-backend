@@ -38,13 +38,13 @@ public class JwtServiceImpl implements IJwtService {
     @Override
     public String generateToken(User user, Authentication auth) {
         return Jwts.builder()
-                .id(user.getId().toString())
                 .claims(Map.of(
+                        "id", user.getId(),
                         "username", user.getName(),
                         "email", user.getInstitutionalEmail(),
-                        "authorities", auth != null && auth.getAuthorities() != null ? auth.getAuthorities().stream()
-                                .map(ga -> ga.getAuthority())
-                                .toList() : List.of()
+                        "authorities", auth != null && auth.getAuthorities() != null
+                                ? auth.getAuthorities().stream().map(ga -> ga.getAuthority()).toList()
+                                : List.of()
                 ))
                 .subject(user.getName())
                 .issuedAt(new Date(System.currentTimeMillis()))

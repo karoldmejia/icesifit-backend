@@ -290,13 +290,31 @@ INSERT INTO user_trainer_assignment (assignment_date, status, trainer_id, user_i
 VALUES (CURRENT_TIMESTAMP, 'PENDING', 3, 5); -- María -> Camila
 
 -- ==========================================
--- EXERCISE_PROGRESS
+-- PROGRESO PARA USER ROUTINE 1 (usuario 4)
+-- ejercicios id 4 (sentadillas) y 5 (burpees)
 -- ==========================================
-INSERT INTO exercise_progress (progress_date, sets_completed, reps_completed, time_completed, effort_level, user_id, routine_exercise_id)
-VALUES (CURRENT_TIMESTAMP, 3, 15, NULL, 8, 4, 1);
 
 INSERT INTO exercise_progress (progress_date, sets_completed, reps_completed, time_completed, effort_level, user_id, routine_exercise_id)
-VALUES (CURRENT_TIMESTAMP, 1, NULL, 20, 5, 5, 3);
+VALUES
+('2025-11-26', 3, 12, NULL, 7, 4, 4),
+('2025-11-27', 3, 15, NULL, 8, 4, 4),
+('2025-11-28', 4, 15, NULL, 8, 4, 4),
+
+('2025-11-26', 2, 10, NULL, 6, 4, 5),
+('2025-11-27', 3, 12, NULL, 7, 4, 5),
+('2025-11-28', 3, 14, NULL, 8, 4, 5);
+
+
+-- ==========================================
+-- PROGRESO PARA USER ROUTINE 2 (usuario 5)
+-- ejercicio id 6 (plancha)
+-- ==========================================
+
+INSERT INTO exercise_progress (progress_date, sets_completed, reps_completed, time_completed, effort_level, user_id, routine_exercise_id)
+VALUES
+('2025-11-26', 3, NULL, 25, 8, 5, 6),
+('2025-11-27', 4, NULL, 30, 9, 5, 6),
+('2025-11-28', 4, NULL, 35, 9, 5, 6);
 
 -- ==========================================
 -- RECOMMENDATIONS

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.example.physical_activity_project.dto.ProgressDTO;
+import com.example.physical_activity_project.dto.UserCountByDateDTO;
 import com.example.physical_activity_project.model.ExerciseProgress;
 
 public interface IExerciseProgressService {
@@ -23,4 +24,7 @@ public interface IExerciseProgressService {
     ProgressDTO getProgressSummary(Long userId, LocalDate startDate, LocalDate endDate);
 
     List<ExerciseProgress> getAllProgress();
+    List<ExerciseProgress> getProgressByRoutineExercise(Long routineExerciseId);
+    List<ExerciseProgress> getProgressByRoutineAndWeek(Long routineId, LocalDate startDate);
+    List<UserCountByDateDTO> getUsersCountByRoutineByDate(Long routineId);
 }

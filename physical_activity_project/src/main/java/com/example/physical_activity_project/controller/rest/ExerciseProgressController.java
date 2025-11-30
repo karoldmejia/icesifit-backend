@@ -2,6 +2,7 @@ package com.example.physical_activity_project.controller.rest;
 
 import com.example.physical_activity_project.dto.ExerciseProgressDTO;
 import com.example.physical_activity_project.dto.ProgressDTO;
+import com.example.physical_activity_project.dto.UserCountByDateDTO;
 import com.example.physical_activity_project.mappers.ExerciseProgressMapper;
 import com.example.physical_activity_project.model.ExerciseProgress;
 import com.example.physical_activity_project.services.impl.ExerciseProgressServiceImpl;
@@ -90,4 +91,33 @@ public class ExerciseProgressController {
         ProgressDTO summary = progressService.getProgressSummary(userId, start, end);
         return ResponseEntity.ok(summary);
     }
+
+    @GetMapping("/routine-exercise/{routineExerciseId}")
+    @PreAuthorize("hasAuthority('VER_PROGRESO_PROPIO') or hasAuthority('VER_PROGRESO_USUARIOS_ASIGNADOS') or hasAuthority('VER_TODO_PROGRESO')")
+    public ResponseEntity<List<ExerciseProgressDTO>> getByRoutineExercise(@PathVariable Long routineExerciseId) {
+        List<ExerciseProgressDTO> list = progressService.getProgressByRoutineExercise(routineExerciseId)
+                .stream()
+                .map(mapper::entityToDto)
+                .toList();
+        return ResponseEntity.ok(list);
+    }
+
+    @GetMapping("/routine/{routineId}/week")
+    @PreAuthorize("hasAuthority('VER_PROGRESO_PROPIO') or hasAuthority('VER_PROGRESO_USUARIOS_ASIGNADOS') or hasAuthority('VER_TODO_PROGRESO')")
+    public ResponseEntity<List<ExerciseProgressDTO>> getWeeklyProgressByRoutine(
+            @PathVariable Long routineId,
+            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate) {
+
+        List<ExerciseProgressDTO> list = progressService.getProgressByRoutineAndWeek(routineId, startDate)
+                .stream()
+                .map(mapper::entityToDto)
+                .toList();
+        return ResponseEntity.ok(list);
+    }
+
+    @GetMapping("/routine/{routineId}/daily-count")
+    public List<UserCountByDateDTO> getUsersCountByRoutineDaily(@PathVariable Long routineId) {
+        return progressService.getUsersCountByRoutineByDate(routineId);
+    }
+
 }
