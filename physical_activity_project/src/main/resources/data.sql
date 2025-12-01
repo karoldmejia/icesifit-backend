@@ -109,6 +109,7 @@ INSERT INTO role_permission (role_id, permission_id) VALUES (3, (SELECT id FROM 
 INSERT INTO role_permission (role_id, permission_id) VALUES (3, (SELECT id FROM permission WHERE name = 'VER_EVENTOS'));
 INSERT INTO role_permission (role_id, permission_id) VALUES (3, (SELECT id FROM permission WHERE name = 'INSCRIBIRSE_EVENTO'));
 INSERT INTO role_permission (role_id, permission_id) VALUES (3, (SELECT id FROM permission WHERE name = 'CANCELAR_INSCRIPCION_PROPIA'));
+INSERT INTO role_permission (role_id, permission_id) VALUES (3, (SELECT id FROM permission WHERE name = 'VER_INSCRIPCIONES_EVENTO'));
 
 -- Espacios y Horarios
 INSERT INTO role_permission (role_id, permission_id) VALUES (3, (SELECT id FROM permission WHERE name = 'VER_ESPACIOS'));
@@ -153,6 +154,8 @@ INSERT INTO role_permission (role_id, permission_id) VALUES (2, (SELECT id FROM 
 
 -- Eventos
 INSERT INTO role_permission (role_id, permission_id) VALUES (2, (SELECT id FROM permission WHERE name = 'VER_EVENTOS'));
+INSERT INTO role_permission (role_id, permission_id) VALUES (2, (SELECT id FROM permission WHERE name = 'INSCRIBIRSE_EVENTO'));
+INSERT INTO role_permission (role_id, permission_id) VALUES (2, (SELECT id FROM permission WHERE name = 'CANCELAR_INSCRIPCION_PROPIA'));
 INSERT INTO role_permission (role_id, permission_id) VALUES (2, (SELECT id FROM permission WHERE name = 'VER_INSCRIPCIONES_EVENTO'));
 
 -- Espacios y Horarios
@@ -351,3 +354,73 @@ VALUES ('RECOMMENDATION', 2, 'Tu entrenador María ha dejado una nueva recomenda
 
 INSERT INTO notification (origin_type, origin_id, text, sent_date, read_flag, user_id)
 VALUES ('MESSAGE', 2, 'Tienes un nuevo mensaje de tu entrenador María.', CURRENT_TIMESTAMP, FALSE, 5);
+
+-- ==========================================
+-- SPACES
+-- ==========================================
+INSERT INTO space (name, location, capacity)
+VALUES ('Gimnasio Principal', 'Edificio A, Planta Baja', 50);
+
+INSERT INTO space (name, location, capacity)
+VALUES ('Sala de Yoga', 'Edificio B, Piso 1', 25);
+
+-- ==========================================
+-- SCHEDULES
+-- ==========================================
+-- Horarios para el Gimnasio Principal (space_id = 1)
+INSERT INTO schedule (day_of_week, start_time, end_time, space_id)
+VALUES ('LUNES', TIMESTAMP '2024-01-01 06:00:00', TIMESTAMP '2024-01-01 22:00:00', 1);
+
+INSERT INTO schedule (day_of_week, start_time, end_time, space_id)
+VALUES ('MIERCOLES', TIMESTAMP '2024-01-01 07:00:00', TIMESTAMP '2024-01-01 21:00:00', 1);
+
+-- Horarios para la Sala de Yoga (space_id = 2)
+INSERT INTO schedule (day_of_week, start_time, end_time, space_id)
+VALUES ('MARTES', TIMESTAMP '2024-01-01 08:00:00', TIMESTAMP '2024-01-01 20:00:00', 2);
+
+INSERT INTO schedule (day_of_week, start_time, end_time, space_id)
+VALUES ('JUEVES', TIMESTAMP '2024-01-01 09:00:00', TIMESTAMP '2024-01-01 19:00:00', 2);
+
+-- ==========================================
+-- EVENTS
+-- ==========================================
+-- Evento 1: Clase de CrossFit
+INSERT INTO event (name, type, start_date, end_date, capacity, description)
+VALUES (
+    'CrossFit Intensivo',
+    'ENTRENAMIENTO_FUNCIONAL',
+    TIMESTAMP '2024-12-01 08:00:00',
+    TIMESTAMP '2024-12-01 09:30:00',
+    20,
+    'Clase de alta intensidad para mejorar fuerza y resistencia'
+);
+
+-- Evento 2: Sesión de Yoga
+INSERT INTO event (name, type, start_date, end_date, capacity, description)
+VALUES (
+    'Yoga Restaurativo',
+    'YOGA',
+    TIMESTAMP '2024-12-02 17:00:00',
+    TIMESTAMP '2024-12-02 18:30:00',
+    15,
+    'Sesión de yoga suave para relajación y flexibilidad'
+);
+
+-- ==========================================
+-- EVENT_SCHEDULES (Relación entre eventos y horarios)
+-- ==========================================
+-- Asignar el evento de CrossFit al horario del Gimnasio Principal del Lunes (schedule_id = 1)
+INSERT INTO event_schedule (event_id, schedule_id)
+VALUES (1, 1);
+
+-- Asignar el evento de CrossFit al horario del Gimnasio Principal del Miércoles (schedule_id = 2)
+INSERT INTO event_schedule (event_id, schedule_id)
+VALUES (1, 2);
+
+-- Asignar el evento de Yoga al horario de la Sala de Yoga del Martes (schedule_id = 3)
+INSERT INTO event_schedule (event_id, schedule_id)
+VALUES (2, 3);
+
+-- Asignar el evento de Yoga al horario de la Sala de Yoga del Jueves (schedule_id = 4)
+INSERT INTO event_schedule (event_id, schedule_id)
+VALUES (2, 4);

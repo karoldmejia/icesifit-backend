@@ -66,7 +66,6 @@ public class UserEventController {
     }
 
     @GetMapping("/event/{eventId}")
-    @PreAuthorize("hasAuthority('VER_INSCRIPCIONES_EVENTO')")
     public ResponseEntity<List<UserEventDTO>> getUserEventsByEvent(@PathVariable Long eventId) {
         List<UserEventDTO> list = service.getUserEventsByEvent(eventId).stream()
                 .map(mapper::entityToDto)

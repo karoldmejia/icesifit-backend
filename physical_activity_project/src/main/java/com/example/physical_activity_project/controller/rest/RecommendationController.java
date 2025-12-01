@@ -1,9 +1,11 @@
 package com.example.physical_activity_project.controller.rest;
 
+import com.example.physical_activity_project.dto.CreateRecommendationRequest;
 import com.example.physical_activity_project.dto.RecommendationDTO;
 import com.example.physical_activity_project.mappers.RecommendationMapper;
 import com.example.physical_activity_project.model.Recommendation;
 import com.example.physical_activity_project.services.IRecommendationService;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,17 +21,6 @@ public class RecommendationController {
 
     private final IRecommendationService recommendationService;
     private final RecommendationMapper mapper;
-
-    @PostMapping
-    @PreAuthorize("hasAuthority('CREAR_RECOMENDACION')")
-    public ResponseEntity<RecommendationDTO> createRecommendation(
-            @RequestParam Long trainerId,
-            @RequestParam Long progressId,
-            @RequestParam String content
-    ) {
-        Recommendation recommendation = recommendationService.createRecommendation(trainerId, progressId, content);
-        return ResponseEntity.ok(mapper.entityToDto(recommendation));
-    }
 
     @GetMapping("/trainer/{trainerId}")
     @PreAuthorize("hasAuthority('VER_RECOMENDACIONES_CREADAS')")
@@ -68,4 +59,16 @@ public class RecommendationController {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping
+    @PreAuthorize("hasAuthority('CREAR_RECOMENDACION')")
+    public ResponseEntity<RecommendationDTO> createRecommendation(
+            @RequestBody CreateRecommendationRequest request
+    ) {
+        Recommendation recommendation = recommendationService.createRecommendation(
+                request.getTrainerId(),
+                request.getProgressId(),
+                request.getContent()
+        );
+        return ResponseEntity.ok(mapper.entityToDto(recommendation));
+    }
 }
