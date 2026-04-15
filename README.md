@@ -13,18 +13,12 @@ Universidad Icesi required a centralized system to manage physical activity prog
 
 #### System capabilities
 
-| Domain            | Functionality                            |
-| ----------------- | ---------------------------------------- |
-| User management   | Registration, roles, and permissions     |
-| Training system   | Routine creation and exercise assignment |
-| Progress tracking | Exercise and routine progress monitoring |
-| Events & spaces   | Scheduling and availability management   |
-| Communication     | Notifications between users              |
-| Access control    | Role-based permissions per action        |
-
-<p align="center">
-  <img src="./screenshots/diagram.png" width="200" alt="System Architecture Diagram"/>
-</p>
+* **User management:** Handles user registration, role assignment, and permission management across the system
+* **Training system:** Supports creation and assignment of workout routines and exercises to users
+* **Progress tracking:** Records and monitors user progress for exercises and training routines over time
+* **Events & spaces:** Manages scheduling, availability, and organization of training events and spaces
+* **Communication:** Sends notifications between users to support interaction and updates within the platform
+* **Access control:** Enforces role-based permissions to restrict or allow actions across different system modules
 
 #### Architecture & tech stack
 
@@ -37,6 +31,9 @@ Universidad Icesi required a centralized system to manage physical activity prog
 | Database     | H2 (dev) / PostgreSQL (production-ready)        |
 | Frontend     | MVC + Thymeleaf templates                       |
 
+<p align="center">
+  <img src="./screenshots/diagram.png" width="300" alt="System Architecture Diagram"/>
+</p>
 
 #### Security model
 
@@ -46,7 +43,6 @@ Universidad Icesi required a centralized system to manage physical activity prog
 | Password encryption | Secure credential storage               |
 | RBAC                | Fine-grained access control per role    |
 | Security filters    | Request-level authorization enforcement |
-
 
 #### Testing & quality
 
