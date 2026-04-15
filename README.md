@@ -5,8 +5,7 @@ It centralizes training, routines, progress tracking, events, and notifications 
 
 The system is built with a layered Spring Boot architecture, implementing JWT authentication, RBAC authorization, and JPA-based persistence.
 
-> Frontend implementation available here:
-> **IcesiFit frontend → https://github.com/karoldmejia/icesifit-frontend**
+> Frontend implementation available here: https://github.com/karoldmejia/icesifit-frontend**
 
 #### Problem context
 
@@ -24,10 +23,10 @@ Universidad Icesi required a centralized system to manage physical activity prog
 | Access control    | Role-based permissions per action        |
 
 <p align="center">
-  <img src="./screenshots/diagram.png"/>
+  <img src="./screenshots/diagram.png" width="400" alt="System Architecture Diagram"/>
 </p>
 
-#### Architecture & Tech Stack
+#### Architecture & tech stack
 
 | Layer        | Technology / Responsibility                     |
 | ------------ | ----------------------------------------------- |
