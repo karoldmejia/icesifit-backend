@@ -23,7 +23,7 @@ Universidad Icesi required a centralized system to manage physical activity prog
 | Access control    | Role-based permissions per action        |
 
 <p align="center">
-  <img src="./screenshots/diagram.png" width="100" alt="System Architecture Diagram"/>
+  <img src="./screenshots/diagram.png" width="200" alt="System Architecture Diagram"/>
 </p>
 
 #### Architecture & tech stack
