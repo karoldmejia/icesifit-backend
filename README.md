@@ -1,235 +1,59 @@
-# Physical Activity Project 
+## IcesiFit - Physical activity system
 
-Plataforma para gestionar actividad física en la Universidad Icesi. Permite administrar usuarios, roles y permisos; registrar rutinas, ejercicios, progreso, eventos y notificaciones en tiempo real, con autenticación JWT y persistencia vía Spring Data JPA.
+A university-grade physical activity management system built for Universidad Icesi.
+It centralizes training, routines, progress tracking, events, and notifications into a unified platform connecting students and certified trainers.
 
-### Integrantes
-- Heiner Danit Rincon - A00402510
-- Karold Mejia - A00401806
-- David Vergara Laverde - A00402237
+The system is built with a layered Spring Boot architecture, implementing JWT authentication, RBAC authorization, and JPA-based persistence.
 
-### Contexto del problema
-La Universidad Icesi requiere una plataforma centralizada que facilite el seguimiento del entrenamiento físico de estudiantes y colaboradores. El sistema permite crear y gestionar rutinas personalizadas, registrar progreso, conectar usuarios con entrenadores certificados, publicar eventos y espacios disponibles, y enviar notificaciones en tiempo real. Este proyecto de SpringBoot implementa la capa de servicios y persistencia necesaria para estas funcionalidades.
+> Frontend implementation available here:
+> **IcesiFit frontend → https://github.com/karoldmejia/icesifit-frontend**
 
-### Estructura del proyecto
-    .
-    ├── descarga.png
-    ├── mvnw
-    ├── mvnw.cmd
-    ├── pom.xml
-    ├── src
-    │   ├── main
-    │   │   ├── frontend
-    │   │   │   ├── package.json
-    │   │   │   ├── package-lock.json
-    │   │   │   ├── postcss.config.js
-    │   │   │   ├── styles.css
-    │   │   │   └── tailwind.config.js
-    │   │   ├── java
-    │   │   │   └── com
-    │   │   │       └── example
-    │   │   │           └── physical_activity_project
-    │   │   │               ├── config
-    │   │   │               │   ├── PasswordConfig.java
-    │   │   │               │   └── SecurityConfig.java
-    │   │   │               ├── controller
-    │   │   │               │   ├── mvc
-    │   │   │               │   │   ├── LoginMVCController.java
-    │   │   │               │   │   ├── PermissionMVCController.java
-    │   │   │               │   │   ├── RolMVCController.java
-    │   │   │               │   │   ├── SignUpMVCController.java
-    │   │   │               │   │   └── UserMVCController.java
-    │   │   │               │   ├── PermissionController.java
-    │   │   │               │   ├── RoleController.java
-    │   │   │               │   └── UserController.java
-    │   │   │               ├── dto
-    │   │   │               │   ├── ProgressDTO.java
-    │   │   │               │   └── RoleDTO.java
-    │   │   │               ├── model
-    │   │   │               │   ├── Event.java
-    │   │   │               │   ├── EventSchedule.java
-    │   │   │               │   ├── Exercise.java
-    │   │   │               │   ├── ExerciseProgress.java
-    │   │   │               │   ├── Message.java
-    │   │   │               │   ├── Notification.java
-    │   │   │               │   ├── Permission.java
-    │   │   │               │   ├── Recommendation.java
-    │   │   │               │   ├── Role.java
-    │   │   │               │   ├── RolePermission.java
-    │   │   │               │   ├── RoutineExercise.java
-    │   │   │               │   ├── Routine.java
-    │   │   │               │   ├── Schedule.java
-    │   │   │               │   ├── Space.java
-    │   │   │               │   ├── UserEvent.java
-    │   │   │               │   ├── User.java
-    │   │   │               │   ├── UserRoutine.java
-    │   │   │               │   └── UserTrainerAssignment.java
-    │   │   │               ├── PhysicalActivityProjectApplication.java
-    │   │   │               ├── repository
-    │   │   │               │   ├── IEventRepository.java
-    │   │   │               │   ├── IEventScheduleRepository.java
-    │   │   │               │   ├── IExerciseProgressRepository.java
-    │   │   │               │   ├── IExerciseRepository.java
-    │   │   │               │   ├── IMessageRepository.java
-    │   │   │               │   ├── INotificationRepository.java
-    │   │   │               │   ├── IPermissionRepository.java
-    │   │   │               │   ├── IRecommendationRepository.java
-    │   │   │               │   ├── IRolePermissionRepository.java
-    │   │   │               │   ├── IRoleRepository.java
-    │   │   │               │   ├── IRoutineExerciseRepository.java
-    │   │   │               │   ├── IRoutineRepository.java
-    │   │   │               │   ├── IScheduleRepository.java
-    │   │   │               │   ├── ISpaceRepository.java
-    │   │   │               │   ├── IUserEventRepository.java
-    │   │   │               │   ├── IUserRepository.java
-    │   │   │               │   ├── IUserRoutineRepository.java
-    │   │   │               │   └── IUserTrainerAssignmentRepository.java
-    │   │   │               ├── security
-    │   │   │               │   ├── CustomUserDetails.java
-    │   │   │               │   └── SecurityAuthority.java
-    │   │   │               ├── services
-    │   │   │               │   ├── auth
-    │   │   │               │   │   └── CustomUserDetailsService.java
-    │   │   │               │   ├── impl
-    │   │   │               │   │   ├── ExerciseProgressServiceImpl.java
-    │   │   │               │   │   ├── ExerciseServiceImpl.java
-    │   │   │               │   │   ├── PermissionServiceImpl.java
-    │   │   │               │   │   ├── RolePermissionServiceImpl.java
-    │   │   │               │   │   ├── RoleServiceImpl.java
-    │   │   │               │   │   ├── RoutineExerciseServiceImpl.java
-    │   │   │               │   │   ├── RoutineServiceImpl.java
-    │   │   │               │   │   ├── UserRoutineServiceImpl.java
-    │   │   │               │   │   └── UserServiceImpl.java
-    │   │   │               │   ├── IExerciseProgressService.java
-    │   │   │               │   ├── IExerciseService.java
-    │   │   │               │   ├── IPermissionService.java
-    │   │   │               │   ├── IRolePermissionService.java
-    │   │   │               │   ├── IRoleService.java
-    │   │   │               │   ├── IRoutineExerciseService.java
-    │   │   │               │   ├── IRoutineService.java
-    │   │   │               │   ├── IUserRoutineService.java
-    │   │   │               │   └── IUserService.java
-    │   │   │               └── ServletInitializer.java
-    │   │   └── resources
-    │   │       ├── application.properties
-    │   │       ├── data.sql
-    │   │       ├── static
-    │   │       │   ├── css
-    │   │       │   │   ├── components
-    │   │       │   │   │   ├── header_user_mngmt.css
-    │   │       │   │   │   └── main.css
-    │   │       │   │   └── users
-    │   │       │   │       ├── forms.css
-    │   │       │   │       ├── personas.css
-    │   │       │   │       └── styles.css
-    │   │       │   ├── images
-    │   │       │   │   └── logo
-    │   │       │   │   │   ├── icesifit_logo_blanco.svg
-    │   │       │   │   │   ├── icesifit_logo_negro.svg
-    │   │       │   │   │   └── icesifit_logo_verde.svg
-    │   │       │   │   ├── login_1.png
-    │   │       │   │   ├── login_2.png
-    │   │       │   │   └── login_3.png
-    │   │       │   ├── js
-    │   │       │   │   └── users
-    │   │       │   │       └── scripts.js
-    │   │       │   └── main.css
-    │   │       └── templates
-    │   │           ├── admin
-    │   │           │   └── headers
-    │   │           │   │   └── header_user_mngmt.html
-    │   │           │   ├── permissions
-    │   │           │   │   ├── add.html
-    │   │           │   │   ├── edit.html
-    │   │           │   │   └── list.html
-    │   │           │   ├── roles
-    │   │           │   │   ├── add.html
-    │   │           │   │   ├── edit.html
-    │   │           │   │   └── list.html
-    │   │           │   ├── users
-    │   │           │   │   ├── add.html
-    │   │           │   │   ├── edit.html
-    │   │           │   │   └── list.html
-    │   │           ├── login
-    │   │           │   ├── login.html
-    │   │           │   └── signup.html
-    │   │           ├── trainer
-    │   │           │   └── dashboard.html
-    │   │           └── user
-    │   │               └── dashboard.html
-    │   └── test
-    │       ├── java
-    │       │   └── com
-    │       │       └── example
-    │       │           └── physical_activity_project
-    │       │               ├── ExerciseProgressServiceImplTest.java
-    │       │               ├── ExerciseServiceImplTest.java
-    │       │               ├── PermissionServiceTest.java
-    │       │               ├── RolePermissionServiceImplTest.java
-    │       │               ├── RoleServiceTest.java
-    │       │               ├── RoutineExerciseServiceImplTest.java
-    │       │               ├── RoutineServiceImplTest.java
-    │       │               ├── UserRoutineServiceTest.java
-    │       │               └── UserServiceTest.java
-    │       └── resources
-    │           └── application-test.properties
+#### Problem context
 
-### Requisitos previos
-*   Java Development Kit (JDK) 17 o superior.
-*   Apache Maven 3.6 o superior.
-*   Una base de datos PostgreSQL en ejecución.
+Universidad Icesi required a centralized system to manage physical activity programs, including personalized training routines, progress tracking, trainer assignments, event scheduling, and real-time notifications. The goal was to unify these processes into a single scalable backend system.
 
-### Configuración
-1) Clonar el repositorio (GitHub Classroom).
-2) El proyecto está configurado para usar una **base de datos H2 en memoria**, por lo que no se necesita instalar ni configurar una base de datos externa.  
-El archivo `src/main/resources/application.properties` ya contiene la configuración necesaria:
- ```
-spring.application.name=physical_activity_project
-server.servlet.context-path=/compu2-class
+#### System capabilities
 
-spring.datasource.url=jdbc:h2:mem:compu2-class
-spring.datasource.driverClassName=org.h2.Driver
-spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
-spring.jpa.hibernate.ddl-auto=create-drop
-spring.datasource.username=admin
-spring.datasource.password=123456
-spring.jpa.show-sql=true
+| Domain            | Functionality                            |
+| ----------------- | ---------------------------------------- |
+| User management   | Registration, roles, and permissions     |
+| Training system   | Routine creation and exercise assignment |
+| Progress tracking | Exercise and routine progress monitoring |
+| Events & spaces   | Scheduling and availability management   |
+| Communication     | Notifications between users              |
+| Access control    | Role-based permissions per action        |
 
-spring.h2.console.enabled=true
-spring.h2.console.path=/h2-console
+<p align="center">
+  <img src="./screenshots/diagram.png"/>
+</p>
 
-spring.sql.init.mode=always
-spring.jpa.defer-datasource-initialization=true
-jwt.secret=r3XuWWx2W/jMkJGWwrgJKv2XzhQDgiaTMSf5aQXtFrg=
-jwt.expiration=86400000
- ```
-4) Carga de esquema/datos iniciales `data.sql`, Spring Boot los ejecutará automáticamente al iniciar.
-5) La aplicación estará disponible en:  
-`http://localhost:8080/compu2-class`
-La consola de H2 estará disponible en:  
-`http://localhost:8080/compu2-class/h2-console`  
-(JDBC URL: `jdbc:h2:mem:compu2-class`, usuario: `admin`, contraseña: `123456`).
+#### Architecture & Tech Stack
+
+| Layer        | Technology / Responsibility                     |
+| ------------ | ----------------------------------------------- |
+| Backend      | Spring Boot                                     |
+| Architecture | Layered (Controllers → Services → Repositories) |
+| Persistence  | Spring Data JPA                                 |
+| Security     | Spring Security + JWT                           |
+| Database     | H2 (dev) / PostgreSQL (production-ready)        |
+| Frontend     | MVC + Thymeleaf templates                       |
 
 
-### Ejecución
-- Linux/macOS:
+#### Security model
 
-        mvn spring-boot:run
-
-- Windows:
-    
-        ./mvnw clean spring-boot:run
-
-### Despliegue
-Se desplegó el proyecto en el equipo 105 del salon 104M. La dirección para acceder es:
-`192.168.131.105:8080/icesiFit`
+| Component           | Purpose                                 |
+| ------------------- | --------------------------------------- |
+| JWT authentication  | Stateless session handling              |
+| Password encryption | Secure credential storage               |
+| RBAC                | Fine-grained access control per role    |
+| Security filters    | Request-level authorization enforcement |
 
 
-### Pruebas y cobertura
-- Ejecutar pruebas:
-    
-        mvn test
+#### Testing & quality
 
-- Reporte de cobertura con JaCoCo:
-    
-        # Abrir: target/site/jacoco/index.html
+Unit tests cover core service logic using JUnit.
+Code coverage is tracked using JaCoCo reports to ensure reliability across business-critical modules.
 
+#### Deployment
+
+Deployed in a university environment and accessible via a local network instance. The system runs as a Spring Boot service exposing the full backend and MVC interface.
